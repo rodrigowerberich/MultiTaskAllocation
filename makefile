@@ -26,7 +26,7 @@ LFLAGS =  -L../lib
 LIBS = -lm -lpython2.7
 
 # define the C source files
-SRCS = src/*.cpp
+SRCS = src/*.cpp src/*.c
 
 # define the C object files 
 #
@@ -39,7 +39,7 @@ SRCS = src/*.cpp
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
-MAIN = teste
+MAIN = multitaskallocation
 
 #
 # The following part of the makefile is generic; it can be used to 
@@ -60,6 +60,9 @@ $(MAIN): $(OBJS)
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
 .cpp.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+
+.c.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
