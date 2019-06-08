@@ -11,9 +11,12 @@ CC = g++
 # define any compile-time flags
 CFLAGS = -Wall -g -std=c++14
 
+FOLDERS:= 	$(filter %/, $(wildcard */)) $(filter %/, $(wildcard */*/)) $(filter %/, $(wildcard */*/*/)) $(filter %/, $(wildcard */*/*/*/))
+INCLUDE_FOLDERS= $(foreach dir, $(FOLDERS), -I$(dir))
+
 # define any directories containing header files other than /usr/include
 #
-INCLUDES =  -Iinclude -I/usr/include/python2.7 
+INCLUDES =  $(INCLUDE_FOLDERS) -I/usr/include/python2.7 
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
@@ -26,7 +29,7 @@ LFLAGS =  -L../lib
 LIBS = -lm -lpython2.7
 
 # define the C source files
-SRCS = src/*.cpp src/*.c
+SRCS =  $(foreach dir, $(FOLDERS), $(wildcard $(dir)*.c)) $(foreach dir, $(FOLDERS), $(wildcard $(dir)*.cpp))
 
 # define the C object files 
 #
@@ -50,6 +53,7 @@ MAIN = multitaskallocation
 .PHONY: depend clean
 
 all:    $(MAIN)
+	@echo $(SRCS)
 	@echo  Compiled with success! Congrats!
 
 $(MAIN): $(OBJS) 
@@ -66,9 +70,12 @@ $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
-	$(RM) *.o *~ $(MAIN)
+	$(RM) $(foreach dir, $(FOLDERS), $(wildcard $(dir)*.o)) *~ $(MAIN)
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
+
+run:
+	@./multitaskallocation
 
 # DO NOT DELETE THIS LINE -- make depend needs it
