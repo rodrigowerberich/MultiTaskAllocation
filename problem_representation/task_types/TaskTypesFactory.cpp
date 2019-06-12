@@ -9,12 +9,12 @@ std::unique_ptr<TaskTypes> TaskTypesFactory::make(const std::string& json){
         JSON::deleteObject(json_object);
         return task_types;
     }
-    return NULL;
+    return nullptr;
 }
 
 std::unique_ptr<TaskTypes> TaskTypesFactory::make(JsonObject& json){
     if(!json.hasItem("task_types")){
-        return NULL;
+        return nullptr;
     }
     auto task_types = std::make_unique<TaskTypesSet>();
     auto task_types_array = json.getArray("task_types");

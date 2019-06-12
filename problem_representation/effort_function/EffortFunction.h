@@ -6,7 +6,7 @@
 
 class EffortFunction{
 public:
-    virtual float operator()(const TaskType& task_type, const RobotType& robot_type) = 0;
+    virtual float operator()(const TaskType& task_type, const RobotType& robot_type) const = 0;
     ~EffortFunction(){}
 };
 

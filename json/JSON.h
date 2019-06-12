@@ -44,9 +44,9 @@ public:
 	void        addInt(int value);
 	void        addObject(JsonObject value);
 	void        addString(std::string value);
-	std::string toString();
-	std::string toStringUnformatted();
-	std::size_t size();
+	std::string toString() const;
+	std::string toStringUnformatted() const;
+	std::size_t size() const;
 private:
 	JsonArray(cJSON* node);
 	friend class JSON;
@@ -65,12 +65,12 @@ class JsonObject {
 public:
 	JsonArray   getArray(std::string name);
 	bool        getBoolean(std::string name);
-	double      getDouble(std::string name);
+	double      getDouble(std::string name) const;
 	int         getInt(std::string name);
 	JsonObject  getObject(std::string name);
-	std::string getString(std::string name);
-	bool        hasItem(std::string name);
-	bool        isValid();
+	std::string getString(std::string name) const;
+	bool        hasItem(std::string name) const;
+	bool        isValid() const;
 	void        setArray(std::string name, JsonArray array);
 	void        setBoolean(std::string name, bool value);
 	void        setDouble(std::string name, double value);
@@ -78,8 +78,8 @@ public:
 	void        setObject(std::string name, JsonObject value);
 	void        setString(std::string name, std::string value);
 	void		setNull(std::string name);
-	std::string toString();
-	std::string toStringUnformatted();
+	std::string toString() const;
+	std::string toStringUnformatted() const;
 
 private:
 	JsonObject(cJSON* node);

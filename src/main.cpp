@@ -43,10 +43,14 @@ int main(int argc, char *argv[]) {
 
 #include <RobotTypeTest.h>
 #include <TaskTypeTest.h>
+#include <EffortFunctionTest.h>
+#include <ProblemRepresentationTest.h>
 
 int main(){
     robot_type_test();
     task_type_test();
+    effort_function_test();
+    problem_definition_test();
 }
 
 #endif

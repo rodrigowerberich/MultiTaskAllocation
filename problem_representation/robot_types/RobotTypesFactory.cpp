@@ -9,12 +9,12 @@ std::unique_ptr<RobotTypes> RobotTypesFactory::make(const std::string& json){
         JSON::deleteObject(json_object);
         return robot_types;
     }
-    return NULL;
+    return nullptr;
 }
 
 std::unique_ptr<RobotTypes> RobotTypesFactory::make(JsonObject& json){
     if(!json.hasItem("robot_types")){
-        return NULL;
+        return nullptr;
     }
     auto robot_types = std::make_unique<RobotTypesSet>();
     auto robot_types_array = json.getArray("robot_types");

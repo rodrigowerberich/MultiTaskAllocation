@@ -181,7 +181,7 @@ std::string JsonArray::getString(int item) {
  * @brief Convert the JSON array to a string.
  * @return A JSON string representation of the array.
  */
-std::string JsonArray::toString() {
+std::string JsonArray::toString() const{
 	char *data = cJSON_Print(m_node);
 	std::string ret(data);
 	free(data);
@@ -193,7 +193,7 @@ std::string JsonArray::toString() {
  * @brief Build an unformatted string representation.
  * @return A string representation.
  */
-std::string JsonArray::toStringUnformatted() {
+std::string JsonArray::toStringUnformatted() const{
 	char *data = cJSON_PrintUnformatted(m_node);
 	std::string ret(data);
 	free(data);
@@ -205,7 +205,7 @@ std::string JsonArray::toStringUnformatted() {
  * @brief Get the number of elements from the array.
  * @return The int value that represents the number of elements.
  */
-std::size_t JsonArray::size() {
+std::size_t JsonArray::size() const{
 	return cJSON_GetArraySize(m_node);
 } // size
 
@@ -241,7 +241,7 @@ bool JsonObject::getBoolean(std::string name) {
  * @param [in] name The name of the object property.
  * @return The double value from the object.
  */
-double JsonObject::getDouble(std::string name) {
+double JsonObject::getDouble(std::string name) const{
 	cJSON *node = cJSON_GetObjectItem(m_node, name.c_str());
 	if (node == nullptr) {
 		return 0.0;
@@ -280,7 +280,7 @@ JsonObject JsonObject::getObject(std::string name) {
  * @param [in] name The name of the object property.
  * @return The string value from the object.  A zero length string is returned when the object is not present.
  */
-std::string JsonObject::getString(std::string name) {
+std::string JsonObject::getString(std::string name) const{
 	cJSON *node = cJSON_GetObjectItem(m_node, name.c_str());
 	if (node == nullptr) {
 		return "";
@@ -297,7 +297,7 @@ std::string JsonObject::getString(std::string name) {
  * @param [in] name The name of the property to check for presence.
  * @return True if the object contains this property.
  */
-bool JsonObject::hasItem(std::string name) {
+bool JsonObject::hasItem(std::string name) const{
 	return cJSON_GetObjectItem(m_node, name.c_str()) != nullptr;
 } // hasItem
 
@@ -306,7 +306,7 @@ bool JsonObject::hasItem(std::string name) {
  * @brief Determine if this represents a valid JSON node.
  * @return True if this is a valid node and false otherwise.
  */
-bool JsonObject::isValid() {
+bool JsonObject::isValid() const{
 	return m_node != nullptr;
 } // isValid
 
@@ -384,7 +384,7 @@ void JsonObject::setNull(std::string name) {
  * @brief Convert the JSON object to a string.
  * @return A JSON string representation of the object.
  */
-std::string JsonObject::toString() {
+std::string JsonObject::toString() const{
 	char *data = cJSON_Print(m_node);
 	std::string ret(data);
 	free(data);
@@ -396,7 +396,7 @@ std::string JsonObject::toString() {
  * @brief Build an unformatted string representation.
  * @return A string representation.
  */
-std::string JsonObject::toStringUnformatted() {
+std::string JsonObject::toStringUnformatted() const{
 	char *data = cJSON_PrintUnformatted(m_node);
 	std::string ret(data);
 	free(data);

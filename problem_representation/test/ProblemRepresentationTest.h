@@ -1,0 +1,6 @@
+#ifndef PROBLEMREPRESENTATIONTEST_H__
+#define PROBLEMREPRESENTATIONTEST_H__
+
+void problem_definition_test();
+
+#endif //PROBLEMREPRESENTATIONTEST_H__

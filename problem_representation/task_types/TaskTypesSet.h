@@ -6,11 +6,11 @@
 
 class TaskTypesSet: public TaskTypes{
 private:
-    std::set<RobotType> m_Task_types;
+    std::set<TaskType> m_Task_types;
 public:
-    std::vector<RobotType> getTaskTypes();
-    bool hasTaskType(const RobotType& type);
-    bool addTaskTypes(const RobotType& type);
+    std::vector<TaskType> getTaskTypes();
+    bool hasTaskType(const TaskType& type);
+    bool addTaskTypes(const TaskType& type);
 };
 
 
