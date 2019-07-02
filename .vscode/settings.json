@@ -45,6 +45,26 @@
         "utility": "cpp",
         "robottypesset.h": "c",
         "robottypes.h": "c",
-        "memory": "cpp"
+        "memory": "cpp",
+        "xstring": "cpp",
+        "algorithm": "cpp",
+        "ios": "cpp",
+        "iterator": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "xfacet": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp",
+        "xlocnum": "cpp",
+        "xmemory": "cpp",
+        "xmemory0": "cpp",
+        "xstddef": "cpp",
+        "xtr1common": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
     }
 }
