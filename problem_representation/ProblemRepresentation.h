@@ -5,6 +5,7 @@
 #include <RobotTypes.h>
 #include <TaskTypes.h>
 #include <EffortFunction.h>
+#include <RewardFunction.h>
 #include <memory>
 #include <JSON.h>
 
@@ -14,7 +15,7 @@ private:
     std::unique_ptr<RobotTypes> m_robot_types;
     std::unique_ptr<TaskTypes> m_task_types;
     std::unique_ptr<EffortFunction> m_effort_function;
-    // RewardFunction m_reward_function;
+    std::unique_ptr<RewardFunction> m_reward_function;
     // Robots m_robots;
     // Tasks m_tasks;
     // Missions m_missions;
@@ -28,6 +29,7 @@ public:
     const std::unique_ptr<RobotTypes>& getRobotTypes();
     const std::unique_ptr<TaskTypes>& getTaskTypes();
     const std::unique_ptr<EffortFunction>& getEffortFunction();
+    const std::unique_ptr<RewardFunction>& getRewardFunction();
 };
 
 #endif //PROBLEMREPRESENTATION_H__

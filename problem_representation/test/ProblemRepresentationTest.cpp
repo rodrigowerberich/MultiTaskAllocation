@@ -30,10 +30,10 @@ bool ProblemRepresentationCorrectFileTest(){
         }
     }
     
-    // const auto& reward_function = representation.getRewardFunction();
-    // for(const auto& task_type: task_types->getTaskTypes()){
-    //     std::cout << "reward_function(" << task_type << ") = " << (*reward_function)(task_type);
-    // }
+    const auto& reward_function = representation.getRewardFunction();
+    for(const auto& task_type: task_types->getTaskTypes()){
+        std::cout << "reward_function(" << task_type << ") = " << (*reward_function)(task_type) << std::endl;
+    }
 
     return true;
 }
