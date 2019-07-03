@@ -35,6 +35,12 @@ bool ProblemRepresentationCorrectFileTest(){
         std::cout << "reward_function(" << task_type << ") = " << (*reward_function)(task_type) << std::endl;
     }
 
+    const auto& robots = representation.getRobots();
+    for (const auto & robot: *robots) {
+        std::cout << "Robot " << robot->getName() << " is of type " << robot->getType() << " at position (" << robot->getPosition().getX() << ", " << robot->getPosition().getY() << ")" << std::endl;
+    }
+    
+
     return true;
 }
 

@@ -1,13 +1,9 @@
 {
     "robot_types":[
-        "R1",
-        "R2",
-        "R3"
+        "R1", "R2", "R3"
     ],
     "task_types":[
-        "T1",
-        "T2",
-        "T3"
+        "T1", "T2", "T3"
     ],
     "effort_function":{
         "T1":{"R1": 0.60, "R2": 0.10,       "R3": 0.34},
@@ -16,5 +12,34 @@
     },
     "reward_function":{
         "T1":5, "T2":2.7, "T3":0.5
-    }
+    },
+    "robots": [
+        {
+            "name": "Bruce",
+            "type": "R2",
+            "position": {
+                "type": "2d",
+                "x": 0.0,
+                "y": 0.0
+            }
+        },
+        {
+            "name": "Dick",
+            "type": "R3",
+            "position": {
+                "type": "2d",
+                "x": -5.0,
+                "y": 3.0
+            }
+        },
+        {
+            "name": "Barbara",
+            "type": "R1",
+            "position": {
+                "type": "2d",
+                "x": 3.0,
+                "y": 4.7
+            }
+        }
+    ]
 }

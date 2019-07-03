@@ -8,6 +8,7 @@
 #include <RewardFunction.h>
 #include <memory>
 #include <JSON.h>
+#include <Robots.h>
 
 class ProblemRepresentation{
 private:
@@ -16,7 +17,7 @@ private:
     std::unique_ptr<TaskTypes> m_task_types;
     std::unique_ptr<EffortFunction> m_effort_function;
     std::unique_ptr<RewardFunction> m_reward_function;
-    // Robots m_robots;
+    std::unique_ptr<Robots> m_robots;
     // Tasks m_tasks;
     // Missions m_missions;
     // SearchArea m_search_area;
@@ -25,11 +26,12 @@ private:
 public:
     ProblemRepresentation(std::string file_name);
     ~ProblemRepresentation(){}
-    bool isValid();
-    const std::unique_ptr<RobotTypes>& getRobotTypes();
-    const std::unique_ptr<TaskTypes>& getTaskTypes();
-    const std::unique_ptr<EffortFunction>& getEffortFunction();
-    const std::unique_ptr<RewardFunction>& getRewardFunction();
+    bool isValid() const;
+    const std::unique_ptr<RobotTypes>& getRobotTypes() const;
+    const std::unique_ptr<TaskTypes>& getTaskTypes() const;
+    const std::unique_ptr<EffortFunction>& getEffortFunction() const;
+    const std::unique_ptr<RewardFunction>& getRewardFunction() const;
+    const std::unique_ptr<Robots>& getRobots() const;
 };
 
 #endif //PROBLEMREPRESENTATION_H__

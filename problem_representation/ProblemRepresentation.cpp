@@ -6,6 +6,7 @@
 #include <TaskTypesFactory.h>
 #include <EffortFunctionFactory.h>
 #include <RewardFunctionFactory.h>
+#include <RobotsFactory.h>
 #include <algorithm>
 #include <ProblemJsonNamesDefinitions.h>
 
@@ -14,7 +15,7 @@ static const std::string problem_json_items[] = {
     TASK_TYPES,
     EFFORT_FUNCTION,
     REWARD_FUNCTION,
-    // "robots",
+    ROBOTS,
     // "tasks",
     // "missions",
     // "search_area",
@@ -58,6 +59,7 @@ bool ProblemRepresentation::parseJsonRepresentation(JsonObject json_object){
     CREATE_REPRESENTATION(task_types, TaskTypes);
     CREATE_REPRESENTATION(effort_function, EffortFunction);
     CREATE_REPRESENTATION(reward_function, RewardFunction);
+    CREATE_REPRESENTATION(robots, Robots);
     return true;
 }
 
@@ -69,18 +71,22 @@ ProblemRepresentation::ProblemRepresentation(std::string file_name){
     JSON::deleteObject(json_object);
 
 }
-bool ProblemRepresentation::isValid(){
+bool ProblemRepresentation::isValid() const{
     return m_is_valid;
 }
-const std::unique_ptr<RobotTypes>& ProblemRepresentation::getRobotTypes(){
+const std::unique_ptr<RobotTypes>& ProblemRepresentation::getRobotTypes() const{
     return m_robot_types;
 }
-const std::unique_ptr<TaskTypes>& ProblemRepresentation::getTaskTypes(){
+const std::unique_ptr<TaskTypes>& ProblemRepresentation::getTaskTypes() const{
     return m_task_types;
 }
-const std::unique_ptr<EffortFunction>& ProblemRepresentation::getEffortFunction(){
+const std::unique_ptr<EffortFunction>& ProblemRepresentation::getEffortFunction() const{
     return m_effort_function;
 }
-const std::unique_ptr<RewardFunction>& ProblemRepresentation::getRewardFunction(){
+const std::unique_ptr<RewardFunction>& ProblemRepresentation::getRewardFunction() const{
     return m_reward_function;
+}
+
+const std::unique_ptr<Robots>& ProblemRepresentation::getRobots() const{
+    return m_robots;
 }
