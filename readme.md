@@ -72,18 +72,13 @@ Follows the same convention as the robot types
 
 ### Effort function
 
-The effort function must be an array of json objects. It must have ***#task_types X #robot_types*** elements, where #task_types and #robot_types are the number of task types and the number of robot types, respectively.
-
-#### Effort function objects
-All effort function objects have the following pattern:
+The effort function must be an json object with T json objects inside it. T is the number of task types. Each task type json object must contain R json objects. R is the number of robot task types. Each robot task type json must contain the function value for that combination of task type and robot type. E.g.
 ```json
 {
-    "task_type":"type",
-    "robot_type":"type",
-    "function": FunctionJSONObject
+    "task_type1": { "robot_type1": 0.5, "robot_type2": "infinity", "robot_type3": 4},
+    "task_type1": { "robot_type1": 1.5, "robot_type2": 2,          "robot_type3": 2}
 }
 ```
-The function key must contain a function json object. (See auxiliary objects).
 
 ### Reward function
 
