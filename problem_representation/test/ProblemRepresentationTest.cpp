@@ -39,6 +39,31 @@ bool ProblemRepresentationCorrectFileTest(){
     for (const auto & robot: *robots) {
         std::cout << "Robot " << robot->getName() << " is of type " << robot->getType() << " at position (" << robot->getPosition().getX() << ", " << robot->getPosition().getY() << ")" << std::endl;
     }
+
+    const auto& robot_real = robots->getRobot("Bruce");
+    if( robot_real != nullptr){
+        std::cout << "Robot " << robot_real->getName() << " is of type " << robot_real->getType() << " at position (" << robot_real->getPosition().getX() << ", " << robot_real->getPosition().getY() << ")" << std::endl;
+    }else{
+        std::cout << "I'm missing bruce!\n";
+    }
+    const auto& robot_fake = robots->getRobot("Banana");
+    if( robot_fake == nullptr){
+        std::cout << "No Banana. The world is at peace\n";
+    }else{
+        std::cout << "FUUUUCK WHY ARE BANANAS HERE????\n";
+    }
+
+    // const auto& tasks = representation.getTasks();
+    // for (const auto & task: *tasks) {
+    //     std::cout << "Robot " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
+    //     std::cout << " prerequisites are: ";
+    //     for(const auto& prerequisite: task->getPrerequisites()){
+    //         std::cout << prerequisite << ", ";
+    //     }
+    //     auto prerequisite_test = "Task 1";
+    //     std::cout << std::endl;
+    //     std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getId() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
+    // }
     
 
     return true;
