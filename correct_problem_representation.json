@@ -44,27 +44,27 @@
     ],
     "tasks":[
         {
-            "id":"Task 1",
+            "id":"Task1",
             "type":"T1",
             "position":{
                 "type":"2d",
                 "x":4.3,
                 "y":0.3
             },
-            "prerequisites":["Task 2"]
+            "prerequisites":["Task2"]
         },
         {
-            "id":"Task 2",
+            "id":"Task2",
             "type":"T2",
             "position":{
                 "type":"2d",
                 "x":-3.1,
                 "y":2.7
             },
-            "prerequisites":["Task 3", "Task 4"]
+            "prerequisites":["Task3", "Task4"]
         },
         {
-            "id":"Task 3",
+            "id":"Task3",
             "type":"T1",
             "position":{
                 "type":"2d",
@@ -74,7 +74,7 @@
             "prerequisites":[]
         },
         {
-            "id":"Task 4",
+            "id":"Task4",
             "type":"T3",
             "position":{
                 "type":"2d",

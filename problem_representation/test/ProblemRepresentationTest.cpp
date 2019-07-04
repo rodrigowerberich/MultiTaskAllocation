@@ -53,17 +53,17 @@ bool ProblemRepresentationCorrectFileTest(){
         std::cout << "FUUUUCK WHY ARE BANANAS HERE????\n";
     }
 
-    // const auto& tasks = representation.getTasks();
-    // for (const auto & task: *tasks) {
-    //     std::cout << "Robot " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
-    //     std::cout << " prerequisites are: ";
-    //     for(const auto& prerequisite: task->getPrerequisites()){
-    //         std::cout << prerequisite << ", ";
-    //     }
-    //     auto prerequisite_test = "Task 1";
-    //     std::cout << std::endl;
-    //     std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getId() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
-    // }
+    const auto& tasks = representation.getTasks();
+    for (const auto & task: *tasks) {
+        std::cout << "Robot " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
+        std::cout << " prerequisites are: ";
+        for(const auto& prerequisite: task->getPrerequisites()){
+            std::cout << prerequisite << ", ";
+        }
+        auto prerequisite_test = "Task4";
+        std::cout << std::endl;
+        std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getId() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
+    }
     
 
     return true;

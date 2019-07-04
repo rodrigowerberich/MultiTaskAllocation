@@ -7,6 +7,7 @@
 #include <EffortFunctionFactory.h>
 #include <RewardFunctionFactory.h>
 #include <RobotsFactory.h>
+#include <TasksFactory.h>
 #include <algorithm>
 #include <ProblemJsonNamesDefinitions.h>
 
@@ -16,7 +17,7 @@ static const std::string problem_json_items[] = {
     EFFORT_FUNCTION,
     REWARD_FUNCTION,
     ROBOTS,
-    // "tasks",
+    TASKS,
     // "missions",
     // "search_area",
     // "obstructed_area",
@@ -60,6 +61,7 @@ bool ProblemRepresentation::parseJsonRepresentation(JsonObject json_object){
     CREATE_REPRESENTATION(effort_function, EffortFunction);
     CREATE_REPRESENTATION(reward_function, RewardFunction);
     CREATE_REPRESENTATION(robots, Robots);
+    CREATE_REPRESENTATION(tasks, Tasks);
     return true;
 }
 
@@ -86,7 +88,10 @@ const std::unique_ptr<EffortFunction>& ProblemRepresentation::getEffortFunction(
 const std::unique_ptr<RewardFunction>& ProblemRepresentation::getRewardFunction() const{
     return m_reward_function;
 }
-
 const std::unique_ptr<Robots>& ProblemRepresentation::getRobots() const{
     return m_robots;
 }
+const std::unique_ptr<Tasks>& ProblemRepresentation::getTasks() const{
+    return m_tasks;
+}
+

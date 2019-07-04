@@ -6,6 +6,6 @@
 #define EFFORT_FUNCTION "effort_function"
 #define REWARD_FUNCTION "reward_function"
 #define ROBOTS "robots"
-
+#define TASKS "tasks"
 
 #endif //PROBLEMJSONNAMESDEFINITION_H__
