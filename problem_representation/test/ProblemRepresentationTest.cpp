@@ -55,26 +55,26 @@ bool ProblemRepresentationCorrectFileTest(){
 
     const auto& tasks = representation.getTasks();
     for (const auto & task: *tasks) {
-        std::cout << "Task " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
+        std::cout << "Task " << task->getName() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
         std::cout << " prerequisites are: ";
         for(const auto& prerequisite: task->getPrerequisites()){
             std::cout << prerequisite << ", ";
         }
         auto prerequisite_test = "Task4";
         std::cout << std::endl;
-        std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getId() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
+        std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getName() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
     }
 
     // const auto& missions = representation.getMissions();
     // for( const auto& mission: *missions ){
-    //     std::cout << "Mission " << mission->getId() << " has a priority " << mission->getPriority() << " with a deadline of " << mission->getDeadline() << " seconds" << std::endl;
+    //     std::cout << "Mission " << mission->getName() << " has a priority " << mission->getPriority() << " with a deadline of " << mission->getDeadline() << " seconds" << std::endl;
     //     std::cout << " mission tasks are:  ";
     //     for(const auto& task_id: missions->getTasks()){
     //         const auto& task = tasks->getTask(task_id);
     //         if(task == nullptr){
     //             return false;
     //         }else{
-    //             std::cout << task->getId();
+    //             std::cout << task->getName();
     //         }
     //     }
     // }

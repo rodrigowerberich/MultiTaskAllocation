@@ -1,11 +1,7 @@
 #ifndef ROBOTS_H__
 #define ROBOTS_H__
 
-#include <vector>
 #include <Robot.h>
-#include <memory>
-#include <algorithm>
-#include <map>
 #include <MappedVectorOfPointers.h>
 
 class Robots: public MappedVectorOfPointers<Robot>{

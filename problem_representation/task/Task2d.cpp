@@ -6,7 +6,7 @@ Task2d::Task2d(const std::string & name, const TaskType & type, const Position2d
     m_position {position},
     m_prerequisites {prerequisites}
  {}
-const std::string & Task2d::getId() const{
+const std::string & Task2d::getName() const{
     return m_name;
 }
 const TaskType & Task2d::getType() const{

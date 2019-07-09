@@ -8,7 +8,7 @@
 
 class Task{
 public:
-    virtual const std::string & getId() const = 0;
+    virtual const std::string & getName() const = 0;
     virtual const TaskType & getType() const = 0;
     virtual const Position2d & getPosition() const = 0;
     virtual const std::set<std::string> & getPrerequisites() const = 0;
