@@ -82,6 +82,34 @@
                 "y":2.7
             },
             "prerequisites":[]
+        },
+        {
+            "id":"Task5",
+            "type":"T2",
+            "position":{
+                "type":"2d",
+                "x":1.7,
+                "y":-1.35
+            },
+            "prerequisites":[]
+        }
+    ],
+    "missions": [
+        {
+            "id":"Mission1",
+            "priority":5,
+            "deadline":120,
+            "mission_tasks": [
+                "Task1", "Task2", "Task3", "Task4"
+            ]
+        },
+        {
+            "id":"Mission2",
+            "priority":4,
+            "deadline":80,
+            "mission_tasks":[
+                "Task5"
+            ]
         }
     ]
 }

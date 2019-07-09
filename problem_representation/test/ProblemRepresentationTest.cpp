@@ -42,7 +42,7 @@ bool ProblemRepresentationCorrectFileTest(){
 
     const auto& robot_real = robots->getRobot("Bruce");
     if( robot_real != nullptr){
-        std::cout << "Robot " << robot_real->getName() << " is of type " << robot_real->getType() << " at position (" << robot_real->getPosition().getX() << ", " << robot_real->getPosition().getY() << ")" << std::endl;
+        std::cout << "Robot " << robot_real->getName() << " is real! It is of type " << robot_real->getType() << " at position (" << robot_real->getPosition().getX() << ", " << robot_real->getPosition().getY() << ")" << std::endl;
     }else{
         std::cout << "I'm missing bruce!\n";
     }
@@ -55,7 +55,7 @@ bool ProblemRepresentationCorrectFileTest(){
 
     const auto& tasks = representation.getTasks();
     for (const auto & task: *tasks) {
-        std::cout << "Robot " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
+        std::cout << "Task " << task->getId() << " is of type " << task->getType() << " at position (" << task->getPosition().getX() << ", " << task->getPosition().getY() << ")";
         std::cout << " prerequisites are: ";
         for(const auto& prerequisite: task->getPrerequisites()){
             std::cout << prerequisite << ", ";
@@ -64,6 +64,20 @@ bool ProblemRepresentationCorrectFileTest(){
         std::cout << std::endl;
         std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getId() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
     }
+
+    // const auto& missions = representation.getMissions();
+    // for( const auto& mission: *missions ){
+    //     std::cout << "Mission " << mission->getId() << " has a priority " << mission->getPriority() << " with a deadline of " << mission->getDeadline() << " seconds" << std::endl;
+    //     std::cout << " mission tasks are:  ";
+    //     for(const auto& task_id: missions->getTasks()){
+    //         const auto& task = tasks->getTask(task_id);
+    //         if(task == nullptr){
+    //             return false;
+    //         }else{
+    //             std::cout << task->getId();
+    //         }
+    //     }
+    // }
     
 
     return true;

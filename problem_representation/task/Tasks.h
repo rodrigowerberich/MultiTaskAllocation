@@ -10,7 +10,7 @@
 
 class Tasks: public std::vector<std::unique_ptr<Task>>{
 public:
-    const std::unique_ptr<Task> & getTask(const std::string& robot_name);
+    const std::unique_ptr<Task> & getTask(const std::string& task_name);
 };
 
 
