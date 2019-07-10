@@ -17,7 +17,6 @@ std::unique_ptr<Task> TaskFactory::make(const std::string& json_str){
 }
 
 std::unique_ptr<Task> TaskFactory::make(JsonObject& json){
-    std::cout << !json.hasItem(TASK_ID) << !json.hasItem(TASK_TYPE) << !json.hasItem(TASK_POSITION) << !json.hasItem(TASK_PREREQUISITES) <<std::endl;
     if(!json.hasItem(TASK_ID) || !json.hasItem(TASK_TYPE) || !json.hasItem(TASK_POSITION) || !json.hasItem(TASK_PREREQUISITES)){
         return nullptr;
     }

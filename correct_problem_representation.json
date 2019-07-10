@@ -99,7 +99,7 @@
             "id":"Mission1",
             "priority":5,
             "deadline":120,
-            "mission_tasks": [
+            "tasks": [
                 "Task1", "Task2", "Task3", "Task4"
             ]
         },
@@ -107,7 +107,7 @@
             "id":"Mission2",
             "priority":4,
             "deadline":80,
-            "mission_tasks":[
+            "tasks":[
                 "Task5"
             ]
         }

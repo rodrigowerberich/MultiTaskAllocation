@@ -8,6 +8,7 @@
 #include <RewardFunction.h>
 #include <Robots.h>
 #include <Tasks.h>
+#include <Missions.h>
 #include <memory>
 #include <JSON.h>
 
@@ -20,7 +21,7 @@ private:
     std::unique_ptr<RewardFunction> m_reward_function;
     std::unique_ptr<Robots> m_robots;
     std::unique_ptr<Tasks> m_tasks;
-    // Missions m_missions;
+    std::unique_ptr<Missions> m_missions;
     // SearchArea m_search_area;
     // Connectivity_function m_connectivity_function;
     bool m_is_valid;
@@ -34,6 +35,7 @@ public:
     const std::unique_ptr<RewardFunction>& getRewardFunction() const;
     const std::unique_ptr<Robots>& getRobots() const;
     const std::unique_ptr<Tasks>& getTasks() const;
+    const std::unique_ptr<Missions>& getMissions() const;
 };
 
 #endif //PROBLEMREPRESENTATION_H__

@@ -65,19 +65,20 @@ bool ProblemRepresentationCorrectFileTest(){
         std::cout << "Is " << prerequisite_test << " a prerequisite of " << task->getName() << "? " << (task->hasPrerequisite(prerequisite_test)? "Yes": "No") << std::endl;
     }
 
-    // const auto& missions = representation.getMissions();
-    // for( const auto& mission: *missions ){
-    //     std::cout << "Mission " << mission->getName() << " has a priority " << mission->getPriority() << " with a deadline of " << mission->getDeadline() << " seconds" << std::endl;
-    //     std::cout << " mission tasks are:  ";
-    //     for(const auto& task_id: missions->getTasks()){
-    //         const auto& task = tasks->getTask(task_id);
-    //         if(task == nullptr){
-    //             return false;
-    //         }else{
-    //             std::cout << task->getName();
-    //         }
-    //     }
-    // }
+    const auto& missions = representation.getMissions();
+    for( const auto& mission: *missions ){
+        std::cout << "Mission " << mission->getName() << " has a priority of " << mission->getPriority() << " with a deadline of " << mission->getDeadline() << " seconds" << std::endl;
+        std::cout << " mission tasks are:  \n";
+        for(const auto& task_id: mission->getTasks()){
+            const auto& task = tasks->getTask(task_id);
+            if(task == nullptr){
+                return false;
+            }else{
+                std::cout << task->getName() << ", ";
+            }
+        }
+        std::cout << std::endl; 
+    }
     
 
     return true;

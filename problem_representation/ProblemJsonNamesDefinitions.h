@@ -7,5 +7,6 @@
 #define REWARD_FUNCTION "reward_function"
 #define ROBOTS "robots"
 #define TASKS "tasks"
+#define MISSIONS "missions"
 
 #endif //PROBLEMJSONNAMESDEFINITION_H__
