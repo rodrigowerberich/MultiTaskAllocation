@@ -67,6 +67,8 @@ public:
 	 * @return Vector result of the dot operation.
 	 */
 	static T dotProduct(const Vector2d &left, const Vector2d &right);
+
+	static T euclideanDistance(const Vector2d &left, const Vector2d &right);
 };
 
 template<typename T>

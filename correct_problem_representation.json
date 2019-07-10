@@ -111,5 +111,15 @@
                 "Task5"
             ]
         }
-    ]
+    ],
+    "search_area":{
+        "type":"rectangle",
+        "bottom_left": {
+            "type":"2d",
+            "x":-5,
+            "y":-5
+        },
+        "width":10,
+        "height":10
+    }
 }

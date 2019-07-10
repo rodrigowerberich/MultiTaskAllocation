@@ -112,6 +112,12 @@ T Vector2d<T>::dotProduct(const Vector2d<T> &left, const Vector2d<T> &right){
 }
 
 template<typename T>
+T Vector2d<T>::euclideanDistance(const Vector2d &left, const Vector2d &right){
+	return sqrt(pow(left.x-right.x,2)+pow(left.y-right.y,2));
+}
+
+
+template<typename T>
 std::ostream& operator<<(std::ostream& os, const Vector2d<T>& vector2){
     os << '{' << vector2.x << ',' << vector2.y << '}';
     return os;
