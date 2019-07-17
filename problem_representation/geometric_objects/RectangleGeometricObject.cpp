@@ -12,7 +12,7 @@ bool RectangleGeometricObject::containsPoint(const Position2d & position) const{
     bool isInY = m_bottom_left_corner.getY() < position.getY() && position.getY() < m_bottom_left_corner.getY()+m_height;
     return isInX && isInY;
 }
-const std::string & RectangleGeometricObject::toStringRepresentation() const{
+std::string RectangleGeometricObject::toStringRepresentation() const{
     auto json = JSON::createObject();
     json.setString("type","rectangle");
     auto position_json = JSON::createObject();

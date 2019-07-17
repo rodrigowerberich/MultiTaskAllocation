@@ -9,7 +9,7 @@
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -Wall -g -std=c++14
+CFLAGS = -Wall -g -std=c++17
 
 FOLDERS:= 	$(filter %/, $(wildcard */)) $(filter %/, $(wildcard */*/)) $(filter %/, $(wildcard */*/*/)) $(filter %/, $(wildcard */*/*/*/))
 INCLUDE_FOLDERS= $(foreach dir, $(FOLDERS), -I$(dir))

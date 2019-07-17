@@ -9,7 +9,7 @@ CircleGeometricObject::CircleGeometricObject(const Position2d & center, double r
 bool CircleGeometricObject::containsPoint(const Position2d & position) const{
     return Position2d::euclideanDistance(m_center, position) < m_radius;
 }
-const std::string & CircleGeometricObject::toStringRepresentation() const{
+std::string CircleGeometricObject::toStringRepresentation() const{
     auto json = JSON::createObject();
     json.setString("type","circle");
     auto position_json = JSON::createObject();

@@ -10,8 +10,8 @@ private:
     double m_radius;
 public:
     CircleGeometricObject(const Position2d & center, double radius);
-    bool containsPoint(const Position2d & position) const;
-    const std::string & toStringRepresentation() const;
+    bool containsPoint(const Position2d & position) const override;
+    std::string toStringRepresentation() const override;
 };
 
 #endif //CIRCLEGEOMETRICAREA_H__

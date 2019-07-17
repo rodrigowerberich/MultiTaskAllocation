@@ -1,5 +1,5 @@
-#ifndef RECTANGLEGEOMETRICAREA_H__
-#define RECTANGLEGEOMETRICAREA_H__
+#ifndef RECTANGLEGEOMETRICOBJECT_H__
+#define RECTANGLEGEOMETRICOBJECT_H__
 
 #include <GeometricObject.h>
 #include <Position.h>
@@ -11,8 +11,8 @@ private:
     double m_height;
 public:
     RectangleGeometricObject(const Position2d & bottom_left_corner, double width, double height);
-    bool containsPoint(const Position2d & position) const;
-    const std::string & toStringRepresentation() const;
+    bool containsPoint(const Position2d & position) const override;
+    std::string toStringRepresentation() const override;
 };
 
-#endif //RECTANGLEGEOMETRICAREA_H__
+#endif //RECTANGLEGEOMETRICOBJECT_H__
