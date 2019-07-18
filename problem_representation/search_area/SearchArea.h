@@ -4,6 +4,7 @@
 #include <string>
 #include <Position.h>
 #include <GeometricObject.h>
+#include <memory>
 
 class SearchArea{
 private:

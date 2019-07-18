@@ -2,7 +2,6 @@
 #include <ProblemRepresentation.h>
 #include <iostream>
 
-
 bool ProblemRepresentationCorrectFileTest(){
     ProblemRepresentation representation("correct_problem_representation.json");
     if(!representation.isValid()){
@@ -80,6 +79,12 @@ bool ProblemRepresentationCorrectFileTest(){
         std::cout << std::endl; 
     }
     
+    const auto& search_area = representation.getSearchArea();
+    std::cout << search_area->toStringRepresentation() << std::endl; 
+    std::cout << "Search area contains point ""0,0"" " << search_area->containsPoint({0,0}) << std::endl;
+    std::cout << "Search area contains point ""-7,3"" " << search_area->containsPoint({-7,3}) << std::endl;
+    std::cout << "Search area contains point ""8,-2"" " << search_area->containsPoint({8,-2}) << std::endl;
+    std::cout << "Search area contains point ""4,4.5"" " << search_area->containsPoint({4,4.5}) << std::endl;
 
     return true;
 }

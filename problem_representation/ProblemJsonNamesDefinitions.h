@@ -8,5 +8,6 @@
 #define ROBOTS "robots"
 #define TASKS "tasks"
 #define MISSIONS "missions"
+#define SEARCH_AREA "search_area"
 
 #endif //PROBLEMJSONNAMESDEFINITION_H__

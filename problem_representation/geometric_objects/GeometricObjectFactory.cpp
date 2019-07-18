@@ -27,18 +27,23 @@ static std::unique_ptr<GeometricObject> make_rectangle(JsonObject& json){
     auto height = json.getDouble("height");
     Position2d bottom_left{0};
     if( json.hasItem("bottom_left") ){
-        bottom_left = PositionFactory::make(json.getObject("bottom_left"));
+        auto position_json = json.getObject("bottom_left");
+        bottom_left = PositionFactory::make(position_json);
     }else if( json.hasItem("top_left") ){
-        bottom_left = PositionFactory::make(json.getObject("top_left"));
+        auto position_json = json.getObject("top_left");
+        bottom_left = PositionFactory::make(position_json);
         bottom_left = bottom_left - Position2d{height,0}; 
     }else if( json.hasItem("bottom_right") ){
-        bottom_left = PositionFactory::make(json.getObject("top_left"));
+        auto position_json = json.getObject("top_left");
+        bottom_left = PositionFactory::make(position_json);
         bottom_left = bottom_left - Position2d{0,width}; 
     }else if( json.hasItem("top_right") ){
-        bottom_left = PositionFactory::make(json.getObject("top_left"));
+        auto position_json = json.getObject("top_left");
+        bottom_left = PositionFactory::make(position_json);
         bottom_left = bottom_left - Position2d{height,width}; 
     }else if( json.hasItem("center") ){
-        bottom_left = PositionFactory::make(json.getObject("center"));
+        auto position_json = json.getObject("center");
+        bottom_left = PositionFactory::make(position_json);
         bottom_left = bottom_left - Position2d{height/2.0,width/2.0}; 
     }else{ 
         return nullptr;
@@ -50,7 +55,8 @@ static std::unique_ptr<GeometricObject> make_circle(JsonObject& json){
     if(!json.hasItem("center") || !json.hasItem("radius")){
         return nullptr;
     }
-    auto center = PositionFactory::make(json.getObject("center"));
+    auto position_json = json.getObject("center");
+    auto center = PositionFactory::make(position_json);
     auto radius = json.getDouble("radius");
     return std::make_unique<CircleGeometricObject>(center, radius);
 }

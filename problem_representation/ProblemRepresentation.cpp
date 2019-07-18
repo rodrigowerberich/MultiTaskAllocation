@@ -9,6 +9,7 @@
 #include <RobotsFactory.h>
 #include <TasksFactory.h>
 #include <MissionsFactory.h>
+#include <SearchAreaFactory.h>
 #include <algorithm>
 #include <ProblemJsonNamesDefinitions.h>
 
@@ -20,7 +21,7 @@ static const std::string problem_json_items[] = {
     ROBOTS,
     TASKS,
     MISSIONS,
-    // "search_area",
+    SEARCH_AREA
     // "obstructed_area",
     // "connectivity_function"
 };
@@ -64,6 +65,7 @@ bool ProblemRepresentation::parseJsonRepresentation(JsonObject json_object){
     CREATE_REPRESENTATION(robots, Robots);
     CREATE_REPRESENTATION(tasks, Tasks);
     CREATE_REPRESENTATION(missions, Missions);
+    CREATE_REPRESENTATION(search_area, SearchArea);
     return true;
 }
 
@@ -99,4 +101,6 @@ const std::unique_ptr<Tasks>& ProblemRepresentation::getTasks() const{
 const std::unique_ptr<Missions>& ProblemRepresentation::getMissions() const{
     return m_missions;
 }
-
+const std::unique_ptr<SearchArea>& ProblemRepresentation::getSearchArea() const{
+    return m_search_area;
+}    
