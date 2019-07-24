@@ -9,5 +9,6 @@
 #define TASKS "tasks"
 #define MISSIONS "missions"
 #define SEARCH_AREA "search_area"
+#define OBSTRUCTED_AREA "obstructed_area"
 
 #endif //PROBLEMJSONNAMESDEFINITION_H__

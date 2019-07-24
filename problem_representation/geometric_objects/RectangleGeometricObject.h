@@ -13,6 +13,7 @@ public:
     RectangleGeometricObject(const Position2d & bottom_left_corner, double width, double height);
     bool containsPoint(const Position2d & position) const override;
     std::string toStringRepresentation() const override;
+    std::unique_ptr<GeometricObject> clone() const override;
 };
 
 #endif //RECTANGLEGEOMETRICOBJECT_H__

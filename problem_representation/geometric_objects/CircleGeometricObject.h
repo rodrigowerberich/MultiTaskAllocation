@@ -12,6 +12,7 @@ public:
     CircleGeometricObject(const Position2d & center, double radius);
     bool containsPoint(const Position2d & position) const override;
     std::string toStringRepresentation() const override;
+    std::unique_ptr<GeometricObject> clone() const override;
 };
 
 #endif //CIRCLEGEOMETRICAREA_H__

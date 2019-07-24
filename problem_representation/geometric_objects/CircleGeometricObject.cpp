@@ -22,3 +22,7 @@ std::string CircleGeometricObject::toStringRepresentation() const{
     JSON::deleteObject(json);
     return representation;
 }
+
+std::unique_ptr<GeometricObject> CircleGeometricObject::clone() const {
+    return std::make_unique<CircleGeometricObject>(m_center, m_radius);
+}

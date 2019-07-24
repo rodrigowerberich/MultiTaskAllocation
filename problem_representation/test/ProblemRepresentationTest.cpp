@@ -86,6 +86,15 @@ bool ProblemRepresentationCorrectFileTest(){
     std::cout << "Search area contains point ""8,-2"" " << search_area->containsPoint({8,-2}) << std::endl;
     std::cout << "Search area contains point ""4,4.5"" " << search_area->containsPoint({4,4.5}) << std::endl;
 
+
+    const auto& obstructed_area = representation.getObstructedArea();
+    std::cout << obstructed_area->toStringRepresentation() << std::endl;
+    std::cout << "Obstructed area contains point ""0,0"" " << search_area->containsPoint({0,0}) << std::endl;
+    std::cout << "Obstructed area contains point ""-7,3"" " << search_area->containsPoint({-7,3}) << std::endl;
+    std::cout << "Obstructed area contains point ""8,-2"" " << search_area->containsPoint({8,-2}) << std::endl;
+    std::cout << "Obstructed area contains point ""4,4.5"" " << search_area->containsPoint({4,4.5}) << std::endl;
+    std::cout << "Obstructed area contains point ""2,3"" " << search_area->containsPoint({2,3}) << std::endl;
+
     return true;
 }
 

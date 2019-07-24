@@ -10,6 +10,7 @@
 #include <Tasks.h>
 #include <Missions.h>
 #include <SearchArea.h>
+#include <ObstructedArea.h>
 #include <memory>
 #include <JSON.h>
 
@@ -24,6 +25,7 @@ private:
     std::unique_ptr<Tasks> m_tasks;
     std::unique_ptr<Missions> m_missions;
     std::unique_ptr<SearchArea> m_search_area;
+    std::unique_ptr<ObstructedArea> m_obstructed_area;
     // Connectivity_function m_connectivity_function;
     bool m_is_valid;
 public:
@@ -37,7 +39,8 @@ public:
     const std::unique_ptr<Robots>& getRobots() const;
     const std::unique_ptr<Tasks>& getTasks() const;
     const std::unique_ptr<Missions>& getMissions() const;
-    const std::unique_ptr<SearchArea>& getSearchArea() const;    
+    const std::unique_ptr<SearchArea>& getSearchArea() const;
+    const std::unique_ptr<ObstructedArea>& getObstructedArea() const;
 };
 
 #endif //PROBLEMREPRESENTATION_H__

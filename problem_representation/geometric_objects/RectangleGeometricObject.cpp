@@ -26,3 +26,7 @@ std::string RectangleGeometricObject::toStringRepresentation() const{
     JSON::deleteObject(json);
     return representation;
 }
+
+std::unique_ptr<GeometricObject> RectangleGeometricObject::clone() const{
+    return std::make_unique<RectangleGeometricObject>(m_bottom_left_corner, m_width, m_height);
+}

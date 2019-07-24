@@ -12,6 +12,7 @@
 #include <SearchAreaFactory.h>
 #include <algorithm>
 #include <ProblemJsonNamesDefinitions.h>
+#include <ObstructedAreaFactory.h>
 
 static const std::string problem_json_items[] = {
     ROBOT_TYPES,
@@ -21,8 +22,8 @@ static const std::string problem_json_items[] = {
     ROBOTS,
     TASKS,
     MISSIONS,
-    SEARCH_AREA
-    // "obstructed_area",
+    SEARCH_AREA,
+    OBSTRUCTED_AREA
     // "connectivity_function"
 };
 
@@ -66,6 +67,7 @@ bool ProblemRepresentation::parseJsonRepresentation(JsonObject json_object){
     CREATE_REPRESENTATION(tasks, Tasks);
     CREATE_REPRESENTATION(missions, Missions);
     CREATE_REPRESENTATION(search_area, SearchArea);
+    CREATE_REPRESENTATION(obstructed_area, ObstructedArea);
     return true;
 }
 
@@ -104,3 +106,6 @@ const std::unique_ptr<Missions>& ProblemRepresentation::getMissions() const{
 const std::unique_ptr<SearchArea>& ProblemRepresentation::getSearchArea() const{
     return m_search_area;
 }    
+const std::unique_ptr<ObstructedArea>& ProblemRepresentation::getObstructedArea() const{
+    return m_obstructed_area;
+}
