@@ -37,7 +37,7 @@
             "type": "R1",
             "position": {
                 "type": "2d",
-                "x": 3.0,
+                "x": 5.0,
                 "y": 4.7
             }
         }
@@ -100,7 +100,7 @@
             "priority":5,
             "deadline":120,
             "tasks": [
-                "Task1", "Task2", "Task3", "Task4"
+                "Task1","Task2", "Task3", "Task4"
             ]
         },
         {
@@ -116,11 +116,11 @@
         "type":"rectangle",
         "bottom_left": {
             "type":"2d",
-            "x":-5,
-            "y":-5
+            "x":-10,
+            "y":-10
         },
-        "width":10,
-        "height":10
+        "width":20,
+        "height":20
     },
     "obstructed_area":{
         "type":"geometric",

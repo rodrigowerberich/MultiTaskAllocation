@@ -6,6 +6,7 @@ bool ProblemRepresentationCorrectFileTest(){
     ProblemRepresentation representation("correct_problem_representation.json");
     if(!representation.isValid()){
         std::cout << "Failed here\n" << std::endl;
+        std::cout << representation.getErrorMessage() << std::endl;
         return false;
     }
     const auto& robot_types = representation.getRobotTypes();
