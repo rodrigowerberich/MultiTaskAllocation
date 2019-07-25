@@ -4,12 +4,15 @@
 #include <string>
 #include <Position.h>
 #include <memory>
+#include <Area.h>
 
-class ObstructedArea
-{
+class ObstructedArea{
+private:
+    PtrArea m_area;
 public:
-    virtual std::string toStringRepresentation() const = 0;
-    virtual bool containsPoint(const Position2d & pos) const = 0;
+    ObstructedArea(PtrArea && area):m_area{std::move(area)}{}
+    std::string toStringRepresentation() const{ return m_area->toStringRepresentation(); };
+    bool containsPoint(const Position2d & pos) const{ return m_area->containsPoint(pos); };
     ~ObstructedArea(){};
 };
 

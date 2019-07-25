@@ -10,5 +10,6 @@
 #define MISSIONS "missions"
 #define SEARCH_AREA "search_area"
 #define OBSTRUCTED_AREA "obstructed_area"
+#define CONNECTIVITY_FUNCTION "connectivity_function"
 
 #endif //PROBLEMJSONNAMESDEFINITION_H__

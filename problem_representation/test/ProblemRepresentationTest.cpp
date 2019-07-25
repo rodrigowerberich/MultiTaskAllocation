@@ -89,11 +89,20 @@ bool ProblemRepresentationCorrectFileTest(){
 
     const auto& obstructed_area = representation.getObstructedArea();
     std::cout << obstructed_area->toStringRepresentation() << std::endl;
-    std::cout << "Obstructed area contains point ""0,0"" " << search_area->containsPoint({0,0}) << std::endl;
-    std::cout << "Obstructed area contains point ""-7,3"" " << search_area->containsPoint({-7,3}) << std::endl;
-    std::cout << "Obstructed area contains point ""8,-2"" " << search_area->containsPoint({8,-2}) << std::endl;
-    std::cout << "Obstructed area contains point ""4,4.5"" " << search_area->containsPoint({4,4.5}) << std::endl;
-    std::cout << "Obstructed area contains point ""2,3"" " << search_area->containsPoint({2,3}) << std::endl;
+    std::cout << "Obstructed area contains point ""0,0"" " << obstructed_area->containsPoint({0,0}) << std::endl;
+    std::cout << "Obstructed area contains point ""-7,3"" " << obstructed_area->containsPoint({-7,3}) << std::endl;
+    std::cout << "Obstructed area contains point ""8,-2"" " << obstructed_area->containsPoint({8,-2}) << std::endl;
+    std::cout << "Obstructed area contains point ""4,4.5"" " << obstructed_area->containsPoint({4,4.5}) << std::endl;
+    std::cout << "Obstructed area contains point ""2,3"" " << obstructed_area->containsPoint({2,3}) << std::endl;
+
+    const auto& connectivity_function = representation.getConnectivityFunction();
+    std::cout << connectivity_function->toStringRepresentation() << std::endl;
+    std::cout << "Connectivity function value at ""0,0"" " <<   (*connectivity_function)({0,0}) << std::endl;
+    std::cout << "Connectivity function value at ""0,0"" " <<   (*connectivity_function)({0,0}) << std::endl;
+    std::cout << "Connectivity function value at ""-7,3"" " <<  (*connectivity_function)({-7,3}) << std::endl;
+    std::cout << "Connectivity function value at ""8,-2"" " <<  (*connectivity_function)({8,-2}) << std::endl;
+    std::cout << "Connectivity function value at ""4,4.5"" " << (*connectivity_function)({4,4.5}) << std::endl;
+    std::cout << "Connectivity function value at ""2,3"" " <<   (*connectivity_function)({2,3}) << std::endl;
 
     return true;
 }

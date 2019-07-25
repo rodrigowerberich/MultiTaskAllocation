@@ -11,6 +11,7 @@
 #include <Missions.h>
 #include <SearchArea.h>
 #include <ObstructedArea.h>
+#include <ConnectivityFunction.h>
 #include <memory>
 #include <JSON.h>
 
@@ -26,7 +27,7 @@ private:
     std::unique_ptr<Missions> m_missions;
     std::unique_ptr<SearchArea> m_search_area;
     std::unique_ptr<ObstructedArea> m_obstructed_area;
-    // Connectivity_function m_connectivity_function;
+    std::unique_ptr<ConnectivityFunction> m_connectivity_function;
     bool m_is_valid;
 public:
     ProblemRepresentation(std::string file_name);
@@ -41,6 +42,7 @@ public:
     const std::unique_ptr<Missions>& getMissions() const;
     const std::unique_ptr<SearchArea>& getSearchArea() const;
     const std::unique_ptr<ObstructedArea>& getObstructedArea() const;
+    const std::unique_ptr<ConnectivityFunction>& getConnectivityFunction() const;
 };
 
 #endif //PROBLEMREPRESENTATION_H__

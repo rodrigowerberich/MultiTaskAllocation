@@ -147,6 +147,27 @@
         ]
     },
     "connectivity_function":{
-        
+        "type":"geometric",
+        "obstacles":[
+            {
+                "type":"rectangle",
+                "bottom_left": {
+                    "type":"2d",
+                    "x":-2.5,
+                    "y":-2.5
+                },
+                "width":5,
+                "height":1
+            },
+            {
+                "type":"circle",
+                "center": {
+                    "type":"2d",
+                    "x":2,
+                    "y":3   
+                },
+                "radius":2
+            }   
+        ]
     }
 }
