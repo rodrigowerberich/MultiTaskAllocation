@@ -30,8 +30,10 @@ std::unique_ptr<RewardFunction> RewardFunctionFactory::make(JsonObject& json){
     auto reward_function = std::make_unique<RewardFunctionMap>();
     for (size_t i = 0; i < task_type_json_array.size(); i++) {
         auto task_type = task_type_json_array.getString(i);
-        auto value = parse_function_json(reward_function_json_object, task_type);
-        reward_function->addMapping(task_type, value);
+        if(reward_function_json_object.hasItem(task_type)){
+            auto value = parse_function_json(reward_function_json_object, task_type);
+            reward_function->addMapping(task_type, value);
+        }
     }
     return reward_function;
 }

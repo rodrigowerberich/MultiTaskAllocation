@@ -7,7 +7,7 @@ InputParser::InputParser(int argc, char* argv[]){
     MainOptions::Option* opt = mo.getParamFromKey("-f");
     const std::string file_name = opt ? (*opt).second : "";
     if(file_name == ""){
-        std::cout << "\033[1;31mA filename is required!\033[0m"<< std::endl;
+        std::cout << "\033[1;31mA filename is required! \033[0;36m Ex: (-f filename) \033[0m"<< std::endl;
     }
     this->file_name = file_name;
 }

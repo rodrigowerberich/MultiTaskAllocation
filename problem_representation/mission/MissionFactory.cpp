@@ -16,9 +16,7 @@ std::unique_ptr<Mission> MissionFactory::make(const std::string& json_str){
 }
 
 std::unique_ptr<Mission> MissionFactory::make(JsonObject& json){
-    std::cout << !json.hasItem(MISSION_ID) << !json.hasItem(MISSION_PRIORITY) << !json.hasItem(MISSION_DEADLINE) << !json.hasItem(MISSION_TASKS) <<std::endl;
     if(!json.hasItem(MISSION_ID) || !json.hasItem(MISSION_PRIORITY) || !json.hasItem(MISSION_DEADLINE) || !json.hasItem(MISSION_TASKS)){
-        std::cout << json.toString() << std::endl;
         return nullptr;
     }
     

@@ -31,15 +31,20 @@ static const std::string problem_json_items[] = {
 
 
 static std::string read_file(std::string file_name){
-    std::ifstream file(file_name);
-    std::string content;
-    while(file.good()){
-        std::string line;
-        file >> line;
-        content.append(line);
+    try{
+        std::ifstream file(file_name);
+        std::string content;
+        while(file.good()){
+            std::string line;
+            file >> line;
+            content.append(line);
+        }
+        file.close();
+        return content;   
     }
-    file.close();
-    return content;
+    catch(const std::ios_base::failure& e){
+        return "";
+    }
 }
 
 static bool problem_representation_json_is_valid(const JsonObject& json_object){
@@ -78,7 +83,7 @@ bool ProblemRepresentation::parseJsonRepresentation(JsonObject json_object){
 static std::tuple<bool, std::string> checkIfAllRobotAndTaskTypesHaveAnEffortFunctionValue(const std::vector<RobotType>& robot_types,const std::vector<TaskType>& task_types, const std::unique_ptr<EffortFunction> & effort_function){
     for(const auto& robot_type: robot_types){
         for(const auto& task_type: task_types){
-            if((*effort_function)(task_type, robot_type) == std::numeric_limits<float>::quiet_NaN()){
+            if((*effort_function)(task_type, robot_type) == -1){
                 return std::make_tuple(false, "Missing value for effort function with entries "+robot_type+" and "+task_type);
             }
         }
@@ -88,7 +93,7 @@ static std::tuple<bool, std::string> checkIfAllRobotAndTaskTypesHaveAnEffortFunc
 
 static std::tuple<bool, std::string> checkIfAllTaskTypesHaveARewardFunctionValue(const std::vector<TaskType>& task_types, const std::unique_ptr<RewardFunction> & reward_function){
     for(const auto& task_type: task_types){
-        if((*reward_function)(task_type) == std::numeric_limits<float>::quiet_NaN()){
+        if((*reward_function)(task_type) == -1){
             return std::make_tuple(false, "Missing value for reward function with entry "+task_type);
         }
     }
@@ -180,14 +185,11 @@ bool validateProblem(T1& is_valid, T2& error_message, T3 function, const T& ... 
 } 
 
 void ProblemRepresentation::evaluateProblemRepresentation(){
-    if(!m_is_valid){
-        return;
-    }
     validateProblem(m_is_valid, m_error_message, checkIfAllRobotAndTaskTypesHaveAnEffortFunctionValue, m_robot_types->getRobotTypes(), m_task_types->getTaskTypes(), m_effort_function) &&
     validateProblem(m_is_valid, m_error_message, checkIfAllTaskTypesHaveARewardFunctionValue, m_task_types->getTaskTypes(), m_reward_function) &&
     validateProblem(m_is_valid, m_error_message, checkIfRobotsHaveValidTypesAndAreInsideSearchAreaAndOutsideObstacles, m_robot_types, m_robots, m_search_area, m_obstructed_area) &&
     validateProblem(m_is_valid, m_error_message, checkIfTasksHaveValidTypesAndAreInsideSearchAreAndOutsideObstacles, m_task_types, m_tasks, m_search_area, m_obstructed_area) &&
-    validateProblem(m_is_valid, m_error_message, checkIfTasksHaveCircularDependence, m_tasks);
+    validateProblem(m_is_valid, m_error_message, checkIfTasksHaveCircularDependence, m_tasks) &&
     validateProblem(m_is_valid, m_error_message, checkIfTaskAreUniqueAndExistInMissions, m_tasks, m_missions);
 }
 
@@ -197,7 +199,11 @@ ProblemRepresentation::ProblemRepresentation(std::string file_name):m_error_mess
     auto json_object = JSON::parseObject(file_content);
     m_is_valid = parseJsonRepresentation(json_object);
     JSON::deleteObject(json_object);
-    evaluateProblemRepresentation();
+    if(m_is_valid){
+        evaluateProblemRepresentation();
+    }else{
+        m_error_message = "Problem parsing file, file is not a valid JSON!";
+    }
 
 }
 bool ProblemRepresentation::isValid() const{

@@ -15,7 +15,6 @@ std::unique_ptr<Missions> MissionsFactory::make(const std::string& json_str){
 
 std::unique_ptr<Missions> MissionsFactory::make(JsonObject& json){
     if(!json.hasItem(MISSIONS)){
-        std::cout << "Failed here 1\n";
         return nullptr;
     }
     auto missions_array = json.getArray(MISSIONS);
@@ -25,7 +24,6 @@ std::unique_ptr<Missions> MissionsFactory::make(JsonObject& json){
         auto mission_json = missions_array.getObject(i);
         auto mission = MissionFactory::make(mission_json);
         if( mission == nullptr ) {
-            std::cout << "Failed here 2\n";
             return nullptr;
         }else{
             missions->push_back(std::move(mission));

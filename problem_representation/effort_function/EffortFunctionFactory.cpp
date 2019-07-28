@@ -30,11 +30,15 @@ std::unique_ptr<EffortFunction> EffortFunctionFactory::make(JsonObject& json){
     auto effort_function = std::make_unique<EffortFunctionMap>();
     for (size_t i = 0; i < task_type_json_array.size(); i++) {
         auto task_type = task_type_json_array.getString(i);
-        auto json_object =  effort_function_json_object.getObject(task_type);
-        for (size_t j = 0; j < robot_type_json_array.size(); j++) {
-            auto robot_type = robot_type_json_array.getString(j);
-            auto value = parse_function_json(json_object, robot_type);
-            effort_function->addMapping(task_type, robot_type, value);
+        if(effort_function_json_object.hasItem(task_type)){
+            auto json_object =  effort_function_json_object.getObject(task_type);
+            for (size_t j = 0; j < robot_type_json_array.size(); j++) {
+                auto robot_type = robot_type_json_array.getString(j);
+                if(json_object.hasItem(robot_type)){
+                    auto value = parse_function_json(json_object, robot_type);
+                    effort_function->addMapping(task_type, robot_type, value);
+                }
+            }
         }
     }
     return effort_function;
