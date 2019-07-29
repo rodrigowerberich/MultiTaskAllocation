@@ -118,6 +118,7 @@ int main(int argc, char *argv[]) {
 #include <string>
 #include <ProblemRepresentation.h>
 #include "matplotlibcpp.h"
+#include <PyPlotRenderer.h>
 using namespace std;
 namespace plt = matplotlibcpp;
 
@@ -126,8 +127,8 @@ int main(int argc, char *argv[]){
     if(!inputParser.inputValid()){
         return -1;
     }
-    // plt::xlim(-15,15);
-    // plt::ylim(-15,15);
+    plt::xlim(-15,15);
+    plt::ylim(-15,15);
 
     string file_name = inputParser.getFileName();
     cout << "Parsing " << file_name << endl;
@@ -140,7 +141,9 @@ int main(int argc, char *argv[]){
     cout << "Parsed with success!!" << endl;
     if(inputParser.showProblem()){
         std::cout << "main.cpp\n";
-        problemRepresentation.demonstrate();
+        // plt::plot({-1.0,1.0,1.0,-1.0},{-1.0,-1.0,1.0,1.0},"r-");
+        PyPlotRenderer().drawRectangle({-1.0,-1.0,2.0,3.0});
+        plt::show();
         // plt::pause(true);
     }
 
