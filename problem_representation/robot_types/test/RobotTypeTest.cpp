@@ -3,7 +3,7 @@
 #include <RobotTypesFactory.h>
 #include <iostream>
 
-bool robot_type_test_set(){
+static bool robot_type_test_set(){
     RobotTypesSet robot_types;
     robot_types.addRobotTypes("banana");
     robot_types.addRobotTypes("typhoon");
@@ -14,7 +14,7 @@ bool robot_type_test_set(){
     return true;
 }
 
-bool robot_type_test_factory(){
+static bool robot_type_test_factory(){
     auto robot_types = RobotTypesFactory::make(R"({"robot_types":["banana","typhoon","rool the dice"]})");
     for(const auto& type: robot_types->getRobotTypes()){
         std::cout << type << std::endl;

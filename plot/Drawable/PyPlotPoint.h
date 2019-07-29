@@ -14,7 +14,7 @@ public:
         m_x_points[0] = x;
         m_y_points[0] = y;
     }
-    void draw() override{
+    virtual void draw() override{
         m_plot.update(m_x_points, m_y_points);
     }
     bool addDrawable(Basic::Drawable* drawable) override{

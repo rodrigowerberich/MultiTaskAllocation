@@ -6,11 +6,13 @@
 class InputParser
 {
 private:
-    std::string file_name;
+    std::string m_file_name;
+    bool m_show_problem;
 public:
     InputParser(int argc, char* argv[]);
     ~InputParser();
     bool inputValid() const;
     const std::string& getFileName() const;
+    bool showProblem() const;
 };
 #endif //INPUTPARSER_H__

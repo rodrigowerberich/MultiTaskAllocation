@@ -2,7 +2,7 @@
 #include <EffortFunctionMap.h>
 #include <iostream>
 
-bool EffortFunctionMapTest(){
+static bool EffortFunctionMapTest(){
     EffortFunctionMap effort_function;
     effort_function.addMapping("T1", "R1", 7.3);
     effort_function.addMapping("T2", "R2", 5.2);

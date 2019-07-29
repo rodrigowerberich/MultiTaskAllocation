@@ -1,6 +1,8 @@
 #ifndef DRAWABLE_H__
 #define DRAWABLE_H__
 
+#include <memory>
+
 namespace Basic{
 
 class Drawable{
@@ -12,6 +14,8 @@ public:
     virtual bool addDrawable(Drawable* drawable) = 0;
     virtual bool removeDrawable(Drawable* drawable) = 0;
 };
+
+using PtrDrawable = std::unique_ptr<Drawable>;
 
 }
 

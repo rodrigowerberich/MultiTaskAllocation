@@ -9,7 +9,7 @@ class Rectangle: public PyPlot::Drawable{
 std::vector<double> m_x_points;
 std::vector<double> m_y_points;
 public:
-    Rectangle(double x, double y, int width, int height, std::string parameters="r-"):PyPlot::Drawable(parameters), m_x_points(5),m_y_points(5){
+    Rectangle(double x, double y, double width, double height, std::string parameters="r-"):PyPlot::Drawable(parameters), m_x_points(5),m_y_points(5){
         m_x_points[0] = x;
         m_x_points[1] = x+width;
         m_x_points[2] = x+width;
