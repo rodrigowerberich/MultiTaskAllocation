@@ -10,10 +10,10 @@ double Drawable::Rectangle::getBottomLeftY() const{
     return m_bottom_left_y;
 }
 double Drawable::Rectangle::getWidth() const{
-    return m_height;
+    return m_width;
 }
 double Drawable::Rectangle::getHeight() const{
-    return m_width;
+    return m_height;
 }
 
 Drawable::Color Drawable::Rectangle::getColor() const{
