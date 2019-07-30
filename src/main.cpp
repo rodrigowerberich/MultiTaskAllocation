@@ -1,112 +1,61 @@
 
-#define TESTING 0
+#define TESTING 1
 
 #if TESTING
 
-#include "matplotlibcpp.h"
-// #include "JSON.h"
-// #include <InputParser.h>
-// #include <Position.h>
-#include <PyPlotRectangle.h>
-#include <PyPlotPoint.h>
-#include <PyPlotNamedPoint.h>
-#include <PyPlotCircle.h>
-namespace plt = matplotlibcpp;
-using namespace std;
-// #include <RobotTypeTest.h>
-// #include <TaskTypeTest.h>
-// #include <EffortFunctionTest.h>
-// #include <RewardFunctionTest.h>
-// #include <ProblemRepresentationTest.h>
-#include <RectangleGeometricObject.h>
+#include <vector>
+#include <cmath>
+#include <tuple>
 
-void quick_draw(){
-    auto rect = PyPlot::Rectangle(-2,-2,4,4);
-    rect.draw();
-    plt::pause(1);
-}
+#include "gnuplot-iostream.h"
 
 int main(int argc, char *argv[]) {
-    // robot_type_test();
-    // task_type_test();
-    // effort_function_test();
-    // reward_function_test();
-    // problem_definition_test();
-    // InputParser inputParser{argc, argv};
-    // if(!inputParser.inputValid()){
-    //     return -1;
-    // }
-    // string file_name = inputParser.getFileName();
-    // cout << file_name << endl;
-    
-    // Prepare data.
-    // int n = 5000; // number of data points
-    // vector<double> x(n),y(n); 
-    // for(int i=0; i<n; ++i) {
-    //     double t = 2*M_PI*i/n;
-    //     x.at(i) = 16*sin(t)*sin(t)*sin(t);
-    //     y.at(i) = 13*cos(t) - 5*cos(2*t) - 2*cos(3*t) - cos(4*t);
-    // }
+	Gnuplot gp;
+	// Create a script which can be manually fed into gnuplot later:
+	//    Gnuplot gp(">script.gp");
+	// Create script and also feed to gnuplot:
+	//    Gnuplot gp("tee plot.gp | gnuplot -persist");
+	// Or choose any of those options at runtime by setting the GNUPLOT_IOSTREAM_CMD
+	// environment variable.
 
-    // // plot() takes an arbitrary number of (x,y,format)-triples. 
-    // // x must be iterable (that is, anything providing begin(x) and end(x)),
-    // // y must either be callable (providing operator() const) or iterable. 
-    // plt::plot(x, y, "r-", x, [](double d) { return 12.5+abs(sin(d)); }, "k-");
-    PyPlot::Rectangle rect(-10,-10,20,20);
-    rect.draw();
-    PyPlot::Circle circle(-2,-2, 1);
-    circle.draw();
-    plt::xlim(-15,15);
-    plt::ylim(-15,15);
-    plt::pause(1);
-    // show plots
-    plt::show(false);
-    auto dot = PyPlot::NamedPoint(1,1, "R1");
-    // plt::plot(std::vector<int>{3},std::vector<int>{3},"kx");
-    for(int i=3; i < 11; i++){
-        // plt::plot(std::vector<int>{i},std::vector<int>{i},"kx");
-        dot.update(i,i);
-        dot.draw();
-        std::cout << "Updating position " << i << std::endl;
-        plt::pause(0.5);
-        // plt::show(false);
-        // mySleep(1000);
-    }
-    quick_draw();
-    plt::pause(0.5);
-    dot.erase();
-    // RectangleGeometricObject obj{{-1,-4},2,2};
-    // const_cast<Basic::Drawable*>(obj.getDrawable())->draw();
+	// Gnuplot vectors (i.e. arrows) require four columns: (x,y,dx,dy)
+	std::vector<std::tuple<double, double, double, double> > pts_A;
 
-    // cout << "WTF 1?\n";
-    // plt::plot({2},{3},"r+");
-    // cout << "WTF 2?\n";
-    // std::vector<double> x = {1,2,3};
-    // std::vector<double> y = {3,6,9};
-    // std::vector<double> x1 = {1,2,3};
-    // std::vector<double> y1 = {7,8,9};
-    // auto test = plt::Plot();
-    // test.update(x,y);
-    // plt::show();
-    // test.remove();
-    // test = plt::Plot();
-    // test.update(x1,y1);
-    // PyPlot::Rectangle rect(-10,-10,20,20);
-    // rect.draw();
-    // plt::xlim(-15,15);
-    // plt::ylim(-15,15);
-    // plt::pause(0.5);
-    rect.erase();
-    rect = PyPlot::Rectangle(-1,-1,2,2);
-    rect.draw();
-    plt::pause(0.5);
-    // const_cast<Basic::Drawable*>(obj.getDrawable())->draw();
-    // plt::xlim(-15,15);
-    // plt::ylim(-15,15);
+	// You can also use a separate container for each column, like so:
+	std::vector<double> pts_B_x;
+	std::vector<double> pts_B_y;
+	std::vector<double> pts_B_dx;
+	std::vector<double> pts_B_dy;
 
-    plt::show();
-    // cout << "WTF 3?\n";
+	// You could also use:
+	//   std::vector<std::vector<double> >
+	//   boost::tuple of four std::vector's
+	//   std::vector of std::tuple (if you have C++11)
+	//   arma::mat (with the Armadillo library)
+	//   blitz::Array<blitz::TinyVector<double, 4>, 1> (with the Blitz++ library)
+	// ... or anything of that sort
 
+	for(double alpha=0; alpha<1; alpha+=1.0/24.0) {
+		double theta = alpha*2.0*3.14159;
+		pts_A.push_back(std::make_tuple(
+			 cos(theta),
+			 sin(theta),
+			-cos(theta)*0.1,
+			-sin(theta)*0.1
+		));
+
+		pts_B_x .push_back( cos(theta)*0.8);
+		pts_B_y .push_back( sin(theta)*0.8);
+		pts_B_dx.push_back( sin(theta)*0.1);
+		pts_B_dy.push_back(-cos(theta)*0.1);
+	}
+
+	// Don't forget to put "\n" at the end of each line!
+	gp << "set xrange [-2:2]\nset yrange [-2:2]\n";
+	// '-' means read from stdin.  The send1d() function sends data to gnuplot's stdin.
+	gp << "plot '-' with vectors title 'pts_A', '-' with vectors title 'pts_B'\n";
+	gp.send1d(pts_A);
+	gp.send1d(std::make_tuple(pts_B_x, pts_B_y, pts_B_dx, pts_B_dy));
 
     return 0;
 }

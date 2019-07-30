@@ -9,7 +9,7 @@ SRC		:= $(foreach dir, $(FOLDERS), $(wildcard $(dir)*.c)) $(foreach dir, $(FOLDE
 INCLUDE	:= $(INCLUDE_FOLDERS) -I/usr/include/python2.7 
 LIB		:= lib
 
-LIBRARIES	:= -lm -lpython2.7
+LIBRARIES	:= -lm -lpython2.7 -lboost_iostreams -lboost_system -lboost_filesystem
 EXECUTABLE	:= main
 
 
