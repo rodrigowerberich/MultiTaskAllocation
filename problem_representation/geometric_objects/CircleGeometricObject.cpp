@@ -2,9 +2,11 @@
 #include <JSON.h>
 
 CircleGeometricObject::CircleGeometricObject(const Position2d & center, double radius):
-    m_center{center}
+    m_center{center},
+    m_circle{center, radius}
 {
-    m_radius = (radius > 0.0)?radius:0.0; 
+    m_radius = (radius > 0.0)?radius:0.0;
+    m_circle = {center, radius};
 }
 bool CircleGeometricObject::containsPoint(const Position2d & position) const{
     return Position2d::euclideanDistance(m_center, position) < m_radius;
@@ -26,3 +28,8 @@ std::string CircleGeometricObject::toStringRepresentation() const{
 std::unique_ptr<GeometricObject> CircleGeometricObject::clone() const {
     return std::make_unique<CircleGeometricObject>(m_center, m_radius);
 }
+
+const drawable::Drawable* CircleGeometricObject::getDrawable() const{
+    return &m_circle;
+}
+

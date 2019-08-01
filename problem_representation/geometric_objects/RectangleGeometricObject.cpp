@@ -2,10 +2,12 @@
 #include <JSON.h>
 
 RectangleGeometricObject::RectangleGeometricObject(const Position2d & bottom_left_corner, double width, double height):
-    m_bottom_left_corner{bottom_left_corner}
+    m_bottom_left_corner{bottom_left_corner},
+    m_rect{m_bottom_left_corner, m_width, m_height}
 {
     m_width = (width > 0.0)?width:0.0; 
     m_height = (height > 0.0)?height:0.0; 
+    m_rect = {m_bottom_left_corner, m_width, m_height};
 }
 bool RectangleGeometricObject::containsPoint(const Position2d & position) const{
     bool isInX = m_bottom_left_corner.getX() < position.getX() && position.getX() < m_bottom_left_corner.getX()+m_width;
@@ -29,4 +31,8 @@ std::string RectangleGeometricObject::toStringRepresentation() const{
 
 std::unique_ptr<GeometricObject> RectangleGeometricObject::clone() const{
     return std::make_unique<RectangleGeometricObject>(m_bottom_left_corner, m_width, m_height);
+}
+
+const drawable::Drawable* RectangleGeometricObject::getDrawable() const{
+    return &m_rect;
 }

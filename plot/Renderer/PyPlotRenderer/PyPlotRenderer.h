@@ -6,11 +6,11 @@
 class PyPlotRenderer{
 private:
 public: 
-    void drawRectangle(const Drawable::Rectangle& rect);
-    // void drawCircle(const Drawable::Circle& rect);
-    // void drawLine(const Drawable::Line& rect);
-    // void drawPoint(const Drawable::Point& rect);
-    // void drawNamedPoint(const Drawable::NamedPoint& rect);
+    void drawRectangle(const drawable::Rectangle& rect);
+    // void drawCircle(const drawable::Circle& rect);
+    // void drawLine(const drawable::Line& rect);
+    // void drawPoint(const drawable::Point& rect);
+    // void drawNamedPoint(const drawable::NamedPoint& rect);
 };
 
 

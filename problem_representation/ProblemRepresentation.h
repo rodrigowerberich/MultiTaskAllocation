@@ -46,6 +46,11 @@ public:
     const std::unique_ptr<ObstructedArea>& getObstructedArea() const;
     const std::unique_ptr<ConnectivityFunction>& getConnectivityFunction() const;
     const std::string& getErrorMessage() const;
+    template <typename RendererType>
+    void draw(const RendererType & renderer) const{
+        renderer.draw(m_search_area);
+        renderer.draw(m_obstructed_area);
+    }
 };
 
 #endif //PROBLEMREPRESENTATION_H__

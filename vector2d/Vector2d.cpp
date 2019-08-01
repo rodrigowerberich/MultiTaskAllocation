@@ -58,6 +58,17 @@ Vector2d<T>& Vector2d<T>::operator/=(const Vector2d<T> &right){
 	}
 	return *this;
 }
+
+template<typename T>
+T Vector2d<T>::operator[](int index) const{
+	if(index == 0){
+		return x;
+	}else{
+		return y;
+	}
+}
+
+
 template<typename T>
 void Vector2d<T>::normalize(){
 	if(x != 0 || y != 0){

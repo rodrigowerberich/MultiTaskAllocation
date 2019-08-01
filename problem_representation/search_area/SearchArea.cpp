@@ -1,4 +1,5 @@
 #include <SearchArea.h>
+#include <GnuPlotRenderer.h>
 
 SearchArea::SearchArea(std::unique_ptr<GeometricObject> && geometric_representation):
 m_geometric_representation(std::move(geometric_representation))
@@ -12,3 +13,16 @@ bool SearchArea::containsPoint(const Position2d & position) const{
 std::string SearchArea::toStringRepresentation() const{
     return m_geometric_representation->toStringRepresentation();
 }
+
+const drawable::Drawable* SearchArea::getDrawable() const{
+    return m_geometric_representation->getDrawable();
+}
+
+
+namespace renderer{
+template <>
+void draw(const std::unique_ptr<SearchArea>& drawable, const GnuPlotRenderer& renderer){
+    drawable->getDrawable()->draw(renderer);
+}
+}
+

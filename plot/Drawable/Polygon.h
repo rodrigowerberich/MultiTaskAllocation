@@ -6,21 +6,21 @@
 #include <cassert>
 #include <iostream>
 
-namespace Drawable{
+namespace drawable{
 
 template <int N, typename Numeric>
 class Polygon{
 protected:
     std::vector<Numeric> m_x_points;
     std::vector<Numeric> m_y_points;
-    Drawable::Color m_color;
+    drawable::Color m_color;
 public:
     Polygon(): m_x_points{N},
     m_y_points{N},
-    m_color{Drawable::Color::Blue}{
+    m_color{drawable::Color::Blue}{
 
     }    
-    Polygon(std::vector<Numeric> x_points, std::vector<Numeric> y_points, Drawable::Color color):
+    Polygon(std::vector<Numeric> x_points, std::vector<Numeric> y_points, drawable::Color color):
     m_x_points{N},
     m_y_points{N},
     m_color{color}{
@@ -40,7 +40,7 @@ public:
     const std::vector<Numeric>& getYPoints() const{
         return m_y_points;
     }
-    Drawable::Color getColor() const{
+    drawable::Color getColor() const{
         return m_color;
     }
 

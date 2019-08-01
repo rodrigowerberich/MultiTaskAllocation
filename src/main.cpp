@@ -1,12 +1,7 @@
 
-#define TESTING 1
+#define TESTING 0
 
 #if TESTING
-
-#include <vector>
-#include <cmath>
-#include <tuple>
-#include "gnuplot-iostream.h"
 
 #include <GnuPlotRenderer.h>
 
@@ -16,8 +11,15 @@ int main(int argc, char *argv[]) {
     renderer.setAxixRange(-20.0,20.0, -20.0, 20.0);
 
     renderer.holdOn();
-    renderer.drawRectangle({-1.0,-1.0,2.0,3.0});
+    renderer.draw(drawable::Rectangle{-1.0,-1.0,5.0,3.0});
     renderer.drawRectangle({-10.0,-10.0,20.0,20.0});
+    renderer.draw(drawable::Circle{-1,-5,0.5});
+    renderer.drawCircle({1,1,2});
+    renderer.drawCircle({0,0,10});
+    renderer.drawPoint({-1,3});
+    renderer.draw(drawable::Point{1,-3});
+    renderer.drawNamedPoint({1,3, "R1"});
+    renderer.draw(drawable::NamedPoint{-1,-3, "R2"});
 
     return 0;
 }
@@ -28,18 +30,17 @@ int main(int argc, char *argv[]) {
 #include <iostream>
 #include <string>
 #include <ProblemRepresentation.h>
-#include "matplotlibcpp.h"
-#include <PyPlotRenderer.h>
+#include <GnuPlotRenderer.h>
+
 using namespace std;
-namespace plt = matplotlibcpp;
 
 int main(int argc, char *argv[]){
     InputParser inputParser{argc, argv};
     if(!inputParser.inputValid()){
         return -1;
     }
-    plt::xlim(-15,15);
-    plt::ylim(-15,15);
+    GnuPlotRenderer gp;
+    gp.setAxixRange(-15,15,-15,15);
 
     string file_name = inputParser.getFileName();
     cout << "Parsing " << file_name << endl;
@@ -51,11 +52,8 @@ int main(int argc, char *argv[]){
     }
     cout << "Parsed with success!!" << endl;
     if(inputParser.showProblem()){
-        std::cout << "main.cpp\n";
-        // plt::plot({-1.0,1.0,1.0,-1.0},{-1.0,-1.0,1.0,1.0},"r-");
-        PyPlotRenderer().drawRectangle({-1.0,-1.0,2.0,3.0});
-        plt::show();
-        // plt::pause(true);
+        gp.holdOn();
+        problemRepresentation.draw(gp);
     }
 
 

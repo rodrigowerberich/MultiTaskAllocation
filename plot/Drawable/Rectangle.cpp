@@ -1,21 +1,23 @@
 #include <Rectangle.h>
 
-Drawable::Rectangle::Rectangle(double x, double y, double width, double height, Drawable::Color color):m_bottom_left_x{x}, m_bottom_left_y{y}, m_width{width}, m_height{height},m_color{color}{
+drawable::Rectangle::Rectangle(double x, double y, double width, double height, drawable::Color color):m_bottom_left_x{x}, m_bottom_left_y{y}, m_width{width}, m_height{height},m_color{color}{
 }
-
-double Drawable::Rectangle::getBottomLeftX() const{
+void drawable::Rectangle::draw(const drawable::Renderer& renderer) const{
+    renderer.drawRectangle(*this);
+}
+double drawable::Rectangle::getBottomLeftX() const{
     return m_bottom_left_x;
 }
-double Drawable::Rectangle::getBottomLeftY() const{
+double drawable::Rectangle::getBottomLeftY() const{
     return m_bottom_left_y;
 }
-double Drawable::Rectangle::getWidth() const{
+double drawable::Rectangle::getWidth() const{
     return m_width;
 }
-double Drawable::Rectangle::getHeight() const{
+double drawable::Rectangle::getHeight() const{
     return m_height;
 }
 
-Drawable::Color Drawable::Rectangle::getColor() const{
+drawable::Color drawable::Rectangle::getColor() const{
     return m_color;
 }

@@ -116,11 +116,11 @@
         "type":"rectangle",
         "bottom_left": {
             "type":"2d",
-            "x":-10,
-            "y":-10
+            "x":-14,
+            "y":-14
         },
-        "width":20,
-        "height":20
+        "width":28,
+        "height":28
     },
     "obstructed_area":{
         "type":"geometric",

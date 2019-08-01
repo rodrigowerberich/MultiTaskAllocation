@@ -1,7 +1,7 @@
 #ifndef COLOR_H__
 #define COLOR_H__
 
-namespace Drawable{
+namespace drawable{
     enum class Color{
         Red,
         Blue,

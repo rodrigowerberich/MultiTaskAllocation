@@ -23,6 +23,8 @@ public:
 	Vector2d& operator-=(const Vector2d &right);
 	Vector2d& operator*=(const Vector2d &right);
 	Vector2d& operator/=(const Vector2d &right);
+	T operator[](int index) const;
+	
 
 	//functions
 	T getX() const;

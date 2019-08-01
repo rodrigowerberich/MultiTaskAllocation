@@ -4,12 +4,14 @@
 #include <string>
 #include <Position.h>
 #include <memory>
+#include <Drawable.h>
 
 class Area
 {
 public:
     virtual std::string toStringRepresentation() const = 0;
     virtual bool containsPoint(const Position2d & pos) const = 0;
+    virtual const drawable::Drawable* getDrawable() const = 0;
     ~Area(){};
 };
 

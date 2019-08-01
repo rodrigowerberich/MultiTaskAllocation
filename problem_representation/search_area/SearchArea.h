@@ -13,6 +13,7 @@ public:
     SearchArea(std::unique_ptr<GeometricObject> && geometric_representation);
     bool containsPoint(const Position2d & position) const;
     std::string toStringRepresentation() const;
+    const drawable::Drawable* getDrawable() const;
     ~SearchArea(){}
 };
 #endif // SEARCHAREA_H__
