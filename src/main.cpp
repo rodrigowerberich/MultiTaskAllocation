@@ -1,7 +1,7 @@
 
-#define TESTING 0
+#define ALTERNATIVE 2
 
-#if TESTING
+#if ALTERNATIVE == 0
 
 #include <GnuPlotRenderer.h>
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-#else
+#elif ALTERNATIVE == 1
 
 #include <InputParser.h>
 #include <iostream>
@@ -64,6 +64,23 @@ int main(int argc, char *argv[]){
 
     cout << "Done, bye!" << endl;
     return 0;
+}
+
+#elif ALTERNATIVE == 2
+
+#include <PlannerCLI.h>
+#include <iostream>
+#include <functional>
+#include <tuple>
+#include <deque>
+#include <PlannerCLIFunction.h>
+
+
+int main(int argc, char *argv[]){
+    // Planner CLI will process the input in order from left to right, ignoring unknow commands
+    PlannerCLI planner(argc, argv);    
+    return planner.run();
+    // return 0;
 }
 
 #endif
