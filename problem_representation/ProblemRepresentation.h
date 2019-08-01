@@ -50,6 +50,9 @@ public:
     void draw(const RendererType & renderer) const{
         renderer.draw(m_search_area);
         renderer.draw(m_obstructed_area);
+        renderer.draw(m_robots);
+        renderer.draw(m_tasks);
+        renderer.draw(m_connectivity_function);
     }
 };
 

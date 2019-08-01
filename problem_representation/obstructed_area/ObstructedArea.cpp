@@ -2,7 +2,6 @@
 #include <GnuPlotRenderer.h>
 
 ObstructedArea::ObstructedArea(PtrArea && area):m_area{std::move(area)}{
-    // area->getDrawable()->setColor(drawable::Color::Red);
 }
 
 
@@ -13,7 +12,9 @@ const drawable::Drawable* ObstructedArea::getDrawable() const{
 
 namespace renderer{
 template <>
-void draw(const std::unique_ptr<ObstructedArea>& drawable, const GnuPlotRenderer& renderer){
-    drawable->getDrawable()->draw(renderer);
+void draw(const std::unique_ptr<ObstructedArea>& obstructed_area, const GnuPlotRenderer& renderer){
+    auto clone = obstructed_area->getDrawable()->clone();
+    clone->setColor(drawable::Color::Red);
+    clone->draw(renderer);
 }
 }

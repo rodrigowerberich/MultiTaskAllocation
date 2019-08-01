@@ -3,9 +3,22 @@
 
 namespace drawable{
     enum class Color{
+        Black,
         Red,
         Blue,
-        Green
+        Green,
+        DarkGreen,
+        Orange,
+        Yellow,
+        Cyan,
+        DarkBlue,
+        Purple,
+        Magenta,
+        Violet,
+        Pink,
+        DeepPink,
+        Gray,
+        Brown
     };
 }
 

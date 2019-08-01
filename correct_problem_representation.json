@@ -33,12 +33,12 @@
             }
         },
         {
-            "name": "Barbara",
+            "name": "Leticia",
             "type": "R1",
             "position": {
                 "type": "2d",
-                "x": 5.0,
-                "y": 4.7
+                "x": 0,
+                "y": -3
             }
         }
     ],
@@ -150,23 +150,13 @@
         "type":"geometric",
         "obstacles":[
             {
-                "type":"rectangle",
-                "bottom_left": {
-                    "type":"2d",
-                    "x":-2.5,
-                    "y":-2.5
-                },
-                "width":5,
-                "height":1
-            },
-            {
                 "type":"circle",
                 "center": {
                     "type":"2d",
-                    "x":2,
-                    "y":3   
+                    "x":0,
+                    "y":0   
                 },
-                "radius":2
+                "radius":6
             }   
         ]
     }

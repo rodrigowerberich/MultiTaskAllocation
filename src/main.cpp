@@ -54,9 +54,14 @@ int main(int argc, char *argv[]){
     if(inputParser.showProblem()){
         gp.holdOn();
         problemRepresentation.draw(gp);
+        gp.holdOn(false);
+        cout << "Type in something to progress...\n";
+        cin.get();
+        cout << "\33[1A\33[2K\r";
+
     }
 
-
+    cout << "Done, bye!" << endl;
     return 0;
 }
 

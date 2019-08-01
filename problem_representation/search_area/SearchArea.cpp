@@ -21,8 +21,10 @@ const drawable::Drawable* SearchArea::getDrawable() const{
 
 namespace renderer{
 template <>
-void draw(const std::unique_ptr<SearchArea>& drawable, const GnuPlotRenderer& renderer){
-    drawable->getDrawable()->draw(renderer);
+void draw(const std::unique_ptr<SearchArea>& search_area, const GnuPlotRenderer& renderer){
+    auto clone = search_area->getDrawable()->clone();
+    clone->setColor(drawable::Color::Blue);
+    clone->draw(renderer);
 }
 }
 

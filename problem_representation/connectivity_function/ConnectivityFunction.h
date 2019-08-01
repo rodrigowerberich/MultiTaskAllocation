@@ -7,10 +7,11 @@ class ConnectivityFunction{
 private:
     PtrArea m_area;
 public:
-    ConnectivityFunction(PtrArea && area):m_area{std::move(area)}{}
+    ConnectivityFunction(PtrArea && area);
     std::string toStringRepresentation() const{ return m_area->toStringRepresentation(); };
     bool containsPoint(const Position2d & pos) const{ return m_area->containsPoint(pos); };
     float operator()(const Position2d & pos) const{ return containsPoint(pos); }
+    const drawable::Drawable* getDrawable() const;
     ~ConnectivityFunction(){}
 };
 

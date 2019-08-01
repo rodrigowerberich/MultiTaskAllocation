@@ -24,5 +24,9 @@ void drawable::DrawableCollection::setColor(drawable::Color color){
 
 std::unique_ptr<drawable::Drawable> drawable::DrawableCollection::clone()  const{
     auto new_collection = std::make_unique<DrawableCollection>(m_color);
+    for(const auto& drawable: m_collection){
+        new_collection->addDrawable(&*drawable);
+    }
+    return new_collection;
 }
 

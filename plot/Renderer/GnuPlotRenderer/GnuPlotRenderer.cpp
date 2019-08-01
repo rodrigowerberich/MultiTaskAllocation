@@ -9,12 +9,38 @@ Gnuplot GnuPlotRenderer::m_gp;
 std::string GnuPlotRenderer::gnuplotColor(drawable::Color color) const{
     std::string color_command = "rgb ";
     switch (color){
-    case drawable::Color::Blue:
-        return color_command+"'#0000FF'";
+    case drawable::Color::Black:
+        return color_command+"'#000000'";
     case drawable::Color::Red:
         return color_command+"'#FF0000'";
+    case drawable::Color::Blue:
+        return color_command+"'#0000FF'";
     case drawable::Color::Green:
         return color_command+"'#00FF00'";
+    case drawable::Color::DarkGreen:
+        return color_command+"'#006400'";
+    case drawable::Color::Orange:
+        return color_command+"'#FFA500'";
+    case drawable::Color::Yellow:
+        return color_command+"'#FFFF00'";
+    case drawable::Color::Cyan:
+        return color_command+"'#00FFFF'";
+    case drawable::Color::DarkBlue:
+        return color_command+"'#00008B'";
+    case drawable::Color::Purple:
+        return color_command+"'#800080'";
+    case drawable::Color::Magenta:
+        return color_command+"'#FF00FF'";
+    case drawable::Color::Violet:
+        return color_command+"'#EE82EE'";
+    case drawable::Color::Pink:
+        return color_command+"'#FFC0CB'";
+    case drawable::Color::DeepPink:
+        return color_command+"'#FF1493'";
+    case drawable::Color::Gray:
+        return color_command+"'#808080'";
+    case drawable::Color::Brown:
+        return color_command+"'#A52A2A'";
     }
     return color_command+"#000000";
 }
