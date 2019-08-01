@@ -12,7 +12,7 @@ INCLUDE	:= $(INCLUDE_FOLDERS) -I/usr/include/python2.7
 LIB		:= lib
 
 LIBRARIES	:= -lm -lpython2.7 -lboost_iostreams -lboost_system -lboost_filesystem
-EXECUTABLE	:= main
+EXECUTABLE	:= planner
 
 
 all: $(BIN)/$(EXECUTABLE)

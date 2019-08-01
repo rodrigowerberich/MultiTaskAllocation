@@ -17,3 +17,7 @@ drawable::Color drawable::Point::getColor() const{
 std::unique_ptr<drawable::Drawable> drawable::Point::clone() const{
     return std::make_unique<drawable::Point>(m_x, m_y, m_color);
 }
+drawable::BoundingBox drawable::Point::getBoundingBox() const{
+    double margin = 1;
+    return {m_x-margin, m_y-margin, m_x+margin, m_y+margin};
+}

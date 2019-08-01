@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 #include <string>
 #include <ProblemRepresentation.h>
 #include <GnuPlotRenderer.h>
-
+#include <Drawable.h>
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -40,7 +40,6 @@ int main(int argc, char *argv[]){
         return -1;
     }
     GnuPlotRenderer gp;
-    gp.setAxixRange(-15,15,-15,15);
 
     string file_name = inputParser.getFileName();
     cout << "Parsing " << file_name << endl;
@@ -53,6 +52,8 @@ int main(int argc, char *argv[]){
     cout << "Parsed with success!!" << endl;
     if(inputParser.showProblem()){
         gp.holdOn();
+        auto bounding_box = problemRepresentation.getSearchArea()->getDrawable()->getBoundingBox();
+        gp.setAxixRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
         problemRepresentation.draw(gp);
         gp.holdOn(false);
         cout << "Type in something to progress...\n";

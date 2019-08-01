@@ -23,3 +23,6 @@ drawable::Color drawable::Rectangle::getColor() const{
 std::unique_ptr<drawable::Drawable> drawable::Rectangle::clone() const{
     return std::make_unique<drawable::Rectangle>(m_bottom_left_x, m_bottom_left_y, m_width, m_height, m_color);
 }
+drawable::BoundingBox drawable::Rectangle::getBoundingBox() const{
+    return {m_bottom_left_x, m_bottom_left_y, m_bottom_left_x+m_width, m_bottom_left_y+m_height};
+}

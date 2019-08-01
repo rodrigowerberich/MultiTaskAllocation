@@ -20,3 +20,7 @@ drawable::Color drawable::Circle::getColor() const{
 std::unique_ptr<drawable::Drawable> drawable::Circle::clone()  const{
     return std::make_unique<drawable::Circle>(m_center_x, m_center_y, m_radius, m_color);
 }
+
+drawable::BoundingBox drawable::Circle::getBoundingBox() const{
+    return {m_center_x-m_radius, m_center_y-m_radius, m_center_x+m_radius, m_center_y+m_radius};
+}

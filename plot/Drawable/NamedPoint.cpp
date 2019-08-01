@@ -19,3 +19,6 @@ drawable::Color drawable::NamedPoint::getColor() const{
 std::unique_ptr<drawable::Drawable> drawable::NamedPoint::clone()  const{
     return std::make_unique<drawable::NamedPoint>(m_point, m_name);
 }
+drawable::BoundingBox drawable::NamedPoint::getBoundingBox() const{
+    return m_point.getBoundingBox();
+}

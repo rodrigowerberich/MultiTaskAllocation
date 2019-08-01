@@ -23,6 +23,7 @@ public:
     virtual bool addDrawable(const Drawable* drawable) {return false;}
     virtual bool removeDrawable(const Drawable* drawable){return false;}
     virtual std::unique_ptr<Drawable> clone() const;
+    virtual BoundingBox getBoundingBox() const;
 };
 }
 
