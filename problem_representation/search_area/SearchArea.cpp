@@ -4,7 +4,7 @@
 SearchArea::SearchArea(std::unique_ptr<GeometricObject> && geometric_representation):
 m_geometric_representation(std::move(geometric_representation))
 {
-
+    // m_geometric_representation->getDrawable()->setColor(drawable::Color::Blue);
 }
 
 bool SearchArea::containsPoint(const Position2d & position) const{

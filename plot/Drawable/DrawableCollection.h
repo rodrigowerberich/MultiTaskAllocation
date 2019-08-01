@@ -7,11 +7,15 @@
 namespace drawable{
 class DrawableCollection: public drawable::Drawable{
 private:
-    std::set<const Drawable*> m_collection;
+    std::set<std::unique_ptr<Drawable>> m_collection;
+    drawable::Color m_color;
 public:
+    DrawableCollection(drawable::Color color = drawable::Color::Green):m_color{color}{}
     virtual void draw(const Renderer& renderer) const override;
     virtual bool addDrawable(const Drawable* drawable) override;
     virtual bool removeDrawable(const Drawable* drawable) override;
+    virtual void setColor(drawable::Color color);
+    virtual std::unique_ptr<Drawable> clone()  const;
 };
 }
 

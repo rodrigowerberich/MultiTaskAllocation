@@ -6,16 +6,23 @@ void drawable::DrawableCollection::draw(const Renderer& renderer) const {
     }
 }
 bool drawable::DrawableCollection::addDrawable(const Drawable* drawable) {
-    if(m_collection.count(drawable) > 0){
-        return false;
-    }
-    m_collection.insert(drawable);
+    auto new_drawable = drawable->clone();
+    new_drawable->setColor(m_color);
+    m_collection.insert(std::move(new_drawable));
     return true;
 }
 bool drawable::DrawableCollection::removeDrawable(const Drawable* drawable) {
-    if(m_collection.count(drawable) == 0){
-        return false;
-    }
-    m_collection.erase(drawable);
-    return true;
+    return false;
 }
+
+void drawable::DrawableCollection::setColor(drawable::Color color){
+    m_color = color;
+    for(const auto& drawable: m_collection){
+        drawable->setColor(m_color);
+    }
+}
+
+std::unique_ptr<drawable::Drawable> drawable::DrawableCollection::clone()  const{
+    auto new_collection = std::make_unique<DrawableCollection>(m_color);
+}
+

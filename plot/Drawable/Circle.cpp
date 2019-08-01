@@ -17,3 +17,6 @@ double drawable::Circle::getRadius() const{
 drawable::Color drawable::Circle::getColor() const{
     return m_color;
 }
+std::unique_ptr<drawable::Drawable> drawable::Circle::clone()  const{
+    return std::make_unique<drawable::Circle>(m_center_x, m_center_y, m_radius, m_color);
+}

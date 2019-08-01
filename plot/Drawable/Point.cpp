@@ -14,3 +14,6 @@ double drawable::Point::getY() const{
 drawable::Color drawable::Point::getColor() const{
     return m_color;
 }
+std::unique_ptr<drawable::Drawable> drawable::Point::clone() const{
+    return std::make_unique<drawable::Point>(m_x, m_y, m_color);
+}

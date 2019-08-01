@@ -5,7 +5,7 @@
 #include <Color.h>
 
 namespace drawable{
-class Point: drawable::Drawable{
+class Point: public drawable::Drawable{
 private:
     double m_x;
     double m_y;
@@ -19,9 +19,10 @@ public:
     double getX() const;
     double getY() const;
     drawable::Color getColor() const;
+    virtual void setColor(drawable::Color color){m_color = color;};
     virtual bool addDrawable(const Drawable* drawable) {return false;}
     virtual bool removeDrawable(const Drawable* drawable){return false;}
-
+    virtual std::unique_ptr<Drawable> clone() const;
 };
 }
 
