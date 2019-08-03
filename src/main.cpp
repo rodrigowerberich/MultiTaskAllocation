@@ -80,7 +80,6 @@ int main(int argc, char *argv[]){
     // Planner CLI will process the input in order from left to right, ignoring unknow commands
     PlannerCLI planner(argc, argv);    
     return planner.run();
-    // return 0;
 }
 
 #endif
