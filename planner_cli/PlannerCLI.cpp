@@ -5,6 +5,7 @@
 #include <HelpCLIFunction.h>
 #include <parse.h>
 #include <visualize.h>
+#include <generate_alpha_tasks.h>
 
 constexpr const char* kNoErrorMessage = "";
 
@@ -19,6 +20,7 @@ PlannerCLI::PlannerCLI(int argc, char *argv[]):m_started_empty{false}{
     // These are the possible commands
     addCLIFunction<OneStringCLIFunction>("parse", "Parse a file and prints out if it is correctly formated\nUsage: parse filename", parse);
     addCLIFunction<OneStringCLIFunction>("visualize", "Visualize the problem representation file in a 2d plot\nvisualize filename", visualize);
+    addCLIFunction<OneStringCLIFunction>("generate_alpha_tasks", "Calculate the alpha tasks of a given problem representation\ngenerate_alpha_tasks filename", generate_alpha_tasks);
 
     // After adding all comands, create help command
     addCLIFunction<HelpCLIFunction>("help", m_functions);
