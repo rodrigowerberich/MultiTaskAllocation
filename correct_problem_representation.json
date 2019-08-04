@@ -136,6 +136,26 @@
                 "height":1
             },
             {
+                "type":"rectangle",
+                "bottom_left": {
+                    "type":"2d",
+                    "x":-10,
+                    "y":-7
+                },
+                "width":10,
+                "height":0.5
+            },
+            {
+                "type":"rectangle",
+                "top_left": {
+                    "type":"2d",
+                    "x":0,
+                    "y":-6.5
+                },
+                "width":0.5,
+                "height":3
+            },
+            {
                 "type":"circle",
                 "center": {
                     "type":"2d",

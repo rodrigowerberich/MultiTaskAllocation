@@ -16,7 +16,7 @@ void visualize(std::tuple <std::string> values){
     GnuPlotRenderer renderer;
     renderer.holdOn();
     auto bounding_box = problemRepresentation.getSearchArea()->getDrawable()->getBoundingBox();
-    renderer.setAxixRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
+    renderer.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
     problemRepresentation.draw(renderer);
     renderer.holdOn(false);
 }

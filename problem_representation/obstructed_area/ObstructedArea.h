@@ -13,6 +13,7 @@ public:
     ObstructedArea(PtrArea && area);
     std::string toStringRepresentation() const{ return m_area->toStringRepresentation(); };
     bool containsPoint(const Position2d & pos) const{ return m_area->containsPoint(pos); };
+    bool operator()(float x, float y) const { return containsPoint({x,y}); }
     const drawable::Drawable* getDrawable() const;
     ~ObstructedArea(){};
 };

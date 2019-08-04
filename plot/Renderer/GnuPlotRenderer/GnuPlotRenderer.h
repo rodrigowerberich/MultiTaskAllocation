@@ -4,7 +4,10 @@
 #include <Renderer.h>
 #include <Rectangle.h>
 #include <Circle.h>
+#include <Line.h>
+#include <Lines.h>
 #include <Point.h>
+#include <Points.h>
 #include <NamedPoint.h>
 #include <gnuplot-iostream.h>
 
@@ -26,7 +29,7 @@ public:
         }
     }
     template <typename Numeric>
-    void setAxixRange(Numeric x_min, Numeric x_max, Numeric y_min, Numeric y_max) const{
+    void setAxisRange(Numeric x_min, Numeric x_max, Numeric y_min, Numeric y_max) const{
         setXRange(x_min, x_max);
         setYRange(y_min, y_max);
     }
@@ -36,8 +39,10 @@ public:
     }
     void drawRectangle(const drawable::Rectangle& rect) const;
     void drawCircle(const drawable::Circle& circle) const;
-    // void drawLine(const drawable::Line& rect);
+    void drawLine(const drawable::Line& line) const;
+    void drawLines(const drawable::Lines& lines) const;
     void drawPoint(const drawable::Point& point) const;
+    void drawPoints(const drawable::Points& points) const;
     void drawNamedPoint(const drawable::NamedPoint& named_point) const;
 };
 

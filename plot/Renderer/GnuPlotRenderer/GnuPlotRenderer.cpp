@@ -3,6 +3,15 @@
 #include <cmath>
 #include <array>
 #include <tuple>
+#include <range.h>
+
+#define CREATE_TEMPLATE_DRAW(drawable_name_)\
+namespace renderer{\
+    template <>\
+    void draw(const drawable::drawable_name_& drawable, const GnuPlotRenderer& renderer){\
+        renderer.draw##drawable_name_(drawable);\
+    }\
+}
 
 Gnuplot GnuPlotRenderer::m_gp;
 
@@ -65,13 +74,7 @@ void GnuPlotRenderer::drawRectangle(const drawable::Rectangle& rect) const{
     };
     m_gp << "plot" << m_gp.file1d(xy_pts) << "with lines notitle lt "<< gnuplotColor(rect.getColor()) << std::endl;
 }
-
-namespace renderer{
-    template <>
-    void draw<drawable::Rectangle, GnuPlotRenderer>(const drawable::Rectangle& drawable, const GnuPlotRenderer& renderer){
-        renderer.drawRectangle(drawable);
-    }
-}
+CREATE_TEMPLATE_DRAW(Rectangle)
 
 void GnuPlotRenderer::drawCircle(const drawable::Circle& circle) const{
     auto x = circle.getCenterX();
@@ -85,35 +88,45 @@ void GnuPlotRenderer::drawCircle(const drawable::Circle& circle) const{
     }
     m_gp << "plot" << m_gp.file1d(points) << "with lines notitle lt "<< gnuplotColor(circle.getColor()) << std::endl;
 }
+CREATE_TEMPLATE_DRAW(Circle)
 
-namespace renderer{
-    template <>
-    void draw<drawable::Circle, GnuPlotRenderer>(const drawable::Circle& drawable, const GnuPlotRenderer& renderer){
-        renderer.drawCircle(drawable);
-    }
+void GnuPlotRenderer::drawLine(const drawable::Line& line) const{
+    auto x1 = line.getX1();
+    auto y1 = line.getY1();
+    auto x2 = line.getX2();
+    auto y2 = line.getY2();
+    std::array<std::pair<double, double>,2> xy_pts = {
+        {{x1, y1}, {x2, y2}}
+    };
+    m_gp << "plot" << m_gp.file1d(xy_pts) << "with lines notitle lt "<< gnuplotColor(line.getColor()) << std::endl;
 }
+CREATE_TEMPLATE_DRAW(Line)
 
+void GnuPlotRenderer::drawLines(const drawable::Lines& lines) const{
+    auto p1s = lines.getP1s();
+    auto p2s = lines.getP2s();
+    std::vector<std::vector<std::pair<double,double>>> all_segments;
+    for(const auto& i:util::lang::indices(p1s)){
+        std::vector<std::pair<double, double>> segment;
+        segment.push_back(std::make_pair(p1s[i].first, p1s[i].second));
+        segment.push_back(std::make_pair(p2s[i].first, p2s[i].second));
+        all_segments.push_back(segment);
+    }
+    m_gp << "plot" << m_gp.file2d(all_segments) << "with lines notitle lt "<< gnuplotColor(lines.getColor()) << std::endl;
+}
+CREATE_TEMPLATE_DRAW(Lines)
 
 void GnuPlotRenderer::drawPoint(const drawable::Point& point) const{
     auto x = point.getX();
     auto y = point.getY();
     m_gp << "plot" << m_gp.file1d(std::array<std::pair<double, double>,1>{std::make_pair(x, y)}) << "with points notitle lt " << gnuplotColor(point.getColor()) << std::endl;
 }
+CREATE_TEMPLATE_DRAW(Point)
 
-namespace renderer{
-    template <>
-    void draw<drawable::Point, GnuPlotRenderer>(const drawable::Point& drawable, const GnuPlotRenderer& renderer){
-        renderer.drawPoint(drawable);
-    }
+void GnuPlotRenderer::drawPoints(const drawable::Points& points) const{
+    m_gp << "plot" << m_gp.file1d(points.getPoints()) << "with points notitle lt " << gnuplotColor(points.getColor()) << std::endl;
 }
-
-#define CREATE_TEMPLATE_DRAW(drawable_name_)\
-namespace renderer{\
-    template <>\
-    void draw(const drawable::drawable_name_& drawable, const GnuPlotRenderer& renderer){\
-        renderer.draw##drawable_name_(drawable);\
-    }\
-}
+CREATE_TEMPLATE_DRAW(Points)
 
 void GnuPlotRenderer::drawNamedPoint(const drawable::NamedPoint& named_point) const{
     auto x = named_point.getX();

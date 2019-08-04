@@ -8,7 +8,7 @@
 int main(int argc, char *argv[]) {
 
     GnuPlotRenderer renderer;
-    renderer.setAxixRange(-20.0,20.0, -20.0, 20.0);
+    renderer.setAxisRange(-20.0,20.0, -20.0, 20.0);
 
     renderer.holdOn();
     renderer.draw(drawable::Rectangle{-1.0,-1.0,5.0,3.0});
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
     if(inputParser.showProblem()){
         gp.holdOn();
         auto bounding_box = problemRepresentation.getSearchArea()->getDrawable()->getBoundingBox();
-        gp.setAxixRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
+        gp.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
         problemRepresentation.draw(gp);
         gp.holdOn(false);
         cout << "Type in something to progress...\n";

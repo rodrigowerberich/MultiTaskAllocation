@@ -32,19 +32,19 @@ static std::unique_ptr<GeometricObject> make_rectangle(JsonObject& json){
     }else if( json.hasItem("top_left") ){
         auto position_json = json.getObject("top_left");
         bottom_left = PositionFactory::make(position_json);
-        bottom_left = bottom_left - Position2d{height,0}; 
+        bottom_left = bottom_left - Position2d{0, height}; 
     }else if( json.hasItem("bottom_right") ){
-        auto position_json = json.getObject("top_left");
+        auto position_json = json.getObject("bottom_right");
         bottom_left = PositionFactory::make(position_json);
-        bottom_left = bottom_left - Position2d{0,width}; 
+        bottom_left = bottom_left - Position2d{width, 0}; 
     }else if( json.hasItem("top_right") ){
-        auto position_json = json.getObject("top_left");
+        auto position_json = json.getObject("top_right");
         bottom_left = PositionFactory::make(position_json);
-        bottom_left = bottom_left - Position2d{height,width}; 
+        bottom_left = bottom_left - Position2d{width, height}; 
     }else if( json.hasItem("center") ){
         auto position_json = json.getObject("center");
         bottom_left = PositionFactory::make(position_json);
-        bottom_left = bottom_left - Position2d{height/2.0,width/2.0}; 
+        bottom_left = bottom_left - Position2d{width/2.0,height/2.0}; 
     }else{ 
         return nullptr;
     }

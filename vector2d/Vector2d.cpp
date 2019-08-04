@@ -123,6 +123,11 @@ T Vector2d<T>::dotProduct(const Vector2d<T> &left, const Vector2d<T> &right){
 }
 
 template<typename T>
+T Vector2d<T>::crossProduct(const Vector2d<T> &left, const Vector2d<T> &right){
+	return left.x * right.y - left.y * right.x;
+}
+
+template<typename T>
 T Vector2d<T>::euclideanDistance(const Vector2d &left, const Vector2d &right){
 	return sqrt(pow(left.x-right.x,2)+pow(left.y-right.y,2));
 }
