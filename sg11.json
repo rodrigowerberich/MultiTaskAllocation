@@ -124,7 +124,7 @@
     },
     "obstructed_area":{
         "type":"geometric",
-        "obstacles":[
+        "areas":[
             {
                 "type":"rectangle",
                 "bottom_left": {
@@ -400,7 +400,7 @@
     },
     "connectivity_function":{
         "type":"geometric",
-        "obstacles":[
+        "areas":[
             {
                 "type":"circle",
                 "center": {
@@ -409,7 +409,7 @@
                     "y":-2.2   
                 },
                 "radius":5
-            }   
+            }  
         ]
     }
 }

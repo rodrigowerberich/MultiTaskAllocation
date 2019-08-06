@@ -13,10 +13,10 @@ PtrArea AreaFactory::make(const std::string& json_str){
 }
 
 static PtrArea makeGeometricArea(JsonObject& json){
-    if(!json.hasItem("obstacles")){
+    if(!json.hasItem("areas")){
         return nullptr;
     }
-    auto obstacles_json_array = json.getArray("obstacles");
+    auto obstacles_json_array = json.getArray("areas");
     std::vector<PtrGeometricObject> obstacles;
     for (size_t i = 0; i < obstacles_json_array.size(); i++){
         auto obstacle_json = obstacles_json_array.getObject(i);

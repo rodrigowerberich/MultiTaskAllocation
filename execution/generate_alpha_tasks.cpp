@@ -7,6 +7,10 @@
 #include <Points.h>
 #include <ConnectGraph.h>
 #include <gnuplot-iostream.h>
+#include <PointMap.h>
+#include <chrono>
+#include <range.h>
+
 
 
 static Point alpha(int i, const ProblemRepresentation& problemRepresentation){
@@ -24,8 +28,33 @@ static Point alpha(int i, const ProblemRepresentation& problemRepresentation){
     return p;
 }
 
+static PointMap generate_points(const ProblemRepresentation& problemRepresentation){
+    const auto & search_area = problemRepresentation.getSearchArea();
+    auto bounding_box = search_area->getDrawable()->getBoundingBox();
+    
+    constexpr double num_of_samples = 1000;
+    double circle_size = (bounding_box.top_right_x-bounding_box.lower_left_x)*(bounding_box.top_right_y-bounding_box.lower_left_y)/(0.5*num_of_samples);
+    std::cout << circle_size << std::endl;
+    std::cout << bounding_box.top_right_x-bounding_box.lower_left_x << std::endl;
+    std::cout << bounding_box.top_right_y-bounding_box.lower_left_y << std::endl;
+
+    PointMap point_map(bounding_box.lower_left_x, bounding_box.top_right_x, bounding_box.lower_left_y, bounding_box.top_right_y, 10, 10);
+    for(int i=0; i < 1000; i++){
+        for(bool pushed = false; !pushed;){
+            auto point = alpha(i, problemRepresentation);
+            if(!point_map.hasPointInRange(point, circle_size)){
+                point_map.insert(point);
+                pushed = true;
+            }
+        }
+    }
+    return point_map;
+}
+
 void generate_alpha_tasks(std::tuple <std::string> values){
     using namespace std;
+    using namespace std::chrono;
+    using namespace util::lang;
     auto file_name = std::get<0>(values);
     ProblemRepresentation problemRepresentation{file_name};
     if(!problemRepresentation.isValid()){
@@ -40,10 +69,12 @@ void generate_alpha_tasks(std::tuple <std::string> values){
     renderer.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
 
 
-    Points points;
-    for(int i=0; i < 1000; i++){
-        points.push_back(alpha(i, problemRepresentation));
-    }
+    auto point_map = generate_points(problemRepresentation);
+    auto start = high_resolution_clock::now();
+    Points points{point_map.begin(), point_map.end()};
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start); 
+    cout << duration.count() << endl; 
     renderer.drawPoints({points});
     auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
     std::vector<std::pair<double,double>> p1s;
