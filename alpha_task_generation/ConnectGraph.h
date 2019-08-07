@@ -17,11 +17,11 @@
 // EdgeStorage connectGraph(const Points& points, T1 collision_fn, T2 connection_fn);
 
 TriangleI orderIndexes(const TriangleI& indexes);
-PointsI neighborhood_k(int index, const Points& points, int k);
-bool edgeInMoreThanOneTriangle(const EdgeI& edge, const TrianglesI& triangles);
-PointsI getOpositionPointsByDistance(const EdgeI& edge_i, const PointI& oposing_point_i, const Points& points);
-TrianglesI getTrianglesToLook(const EdgeI& edge_i, const PointI& oposing_point_i, const TrianglesI& triangles, const Points& points);
-bool checkTriangleIntersection(const EdgeI& edge_i, const PointI& oposing_point_i, const TrianglesI& triangles_to_check_i, const Points& points);
+// PointsI neighborhood_k(int index, const Points& points, int k);
+// bool edgeInMoreThanOneTriangle(const EdgeI& edge, const TrianglesI& triangles);
+// PointsI getOpositionPointsByDistance(const EdgeI& edge_i, const PointI& oposing_point_i, const Points& points);
+// TrianglesI getTrianglesToLook(const EdgeI& edge_i, const PointI& oposing_point_i, const TrianglesI& triangles, const Points& points);
+// bool checkTriangleIntersection(const EdgeI& edge_i, const PointI& oposing_point_i, const TrianglesI& triangles_to_check_i, const Points& points);
 
 template <typename CollisionFunction, typename ConnectionFunction>
 bool checkEdgeCollisionOrConnection(const Edge& edge, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
@@ -63,42 +63,42 @@ void EdgeStorage_addTriangleCheckingCollision(EdgeStorage& edge_storage, const T
     }
 }
 
-template <typename CollisionFunction, typename ConnectionFunction>
-EdgeStorage connectGraph(const Points& points, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
-    int initial_point = 0;
-    TriangleI initial_triangle = orderIndexes(PI2TI(neighborhood_k(initial_point, points, 3)));
-    TrianglesI triangles = {initial_triangle};
-    EdgeStorage edge_storage;
-    edge_storage.addTriangle(initial_triangle);
-    for(size_t i=0; i < triangles.size(); i++){
-        EdgesI edges = { EdgeI{triangles[i][0], triangles[i][1]},
-                         EdgeI{triangles[i][0], triangles[i][2]},
-                         EdgeI{triangles[i][1], triangles[i][2]} };
-        PointsI edge_oposing_points = { PointI{triangles[i][2]},
-                                        PointI{triangles[i][1]},
-                                        PointI{triangles[i][0]} };
-        for(size_t j = 0; j < 3; j++){
-            if(! edgeInMoreThanOneTriangle(edges[j], triangles)){
-                EdgeI& edge = edges[j];
-                PointI& edge_oposing_point = edge_oposing_points[j];
-                PointsI candidate_points = getOpositionPointsByDistance(edge, edge_oposing_point, points);
-                TrianglesI triangles_to_look = getTrianglesToLook(edge, edge_oposing_point, triangles, points);
-                for (const auto& candidate_point_i: candidate_points){
-                    if(!checkTriangleIntersection(edge, candidate_point_i, triangles_to_look, points)){
-                        TriangleI new_triangle = orderIndexes({edge[0], edge[1], candidate_point_i});
-                        triangles.push_back(new_triangle);
-                        EdgeStorage_addTriangleCheckingCollision(edge_storage, new_triangle, points, collision_fn, connection_fn);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    return edge_storage;
-}
+// template <typename CollisionFunction, typename ConnectionFunction>
+// EdgeStorage connectGraph(const Points& points, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
+//     int initial_point = 0;
+//     TriangleI initial_triangle = orderIndexes(PI2TI(neighborhood_k(initial_point, points, 3)));
+//     TrianglesI triangles = {initial_triangle};
+//     EdgeStorage edge_storage;
+//     edge_storage.addTriangle(initial_triangle);
+//     for(size_t i=0; i < triangles.size(); i++){
+//         EdgesI edges = { EdgeI{triangles[i][0], triangles[i][1]},
+//                          EdgeI{triangles[i][0], triangles[i][2]},
+//                          EdgeI{triangles[i][1], triangles[i][2]} };
+//         PointsI edge_oposing_points = { PointI{triangles[i][2]},
+//                                         PointI{triangles[i][1]},
+//                                         PointI{triangles[i][0]} };
+//         for(size_t j = 0; j < 3; j++){
+//             if(! edgeInMoreThanOneTriangle(edges[j], triangles)){
+//                 EdgeI& edge = edges[j];
+//                 PointI& edge_oposing_point = edge_oposing_points[j];
+//                 PointsI candidate_points = getOpositionPointsByDistance(edge, edge_oposing_point, points);
+//                 TrianglesI triangles_to_look = getTrianglesToLook(edge, edge_oposing_point, triangles, points);
+//                 for (const auto& candidate_point_i: candidate_points){
+//                     if(!checkTriangleIntersection(edge, candidate_point_i, triangles_to_look, points)){
+//                         TriangleI new_triangle = orderIndexes({edge[0], edge[1], candidate_point_i});
+//                         triangles.push_back(new_triangle);
+//                         EdgeStorage_addTriangleCheckingCollision(edge_storage, new_triangle, points, collision_fn, connection_fn);
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     return edge_storage;
+// }
 
 template <typename CollisionFunction, typename ConnectionFunction>
-EdgeStorage connectGraph2(const Points& points, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
+EdgeStorage connectGraph(const Points& points, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
     std::vector<double> coords;
     for(const auto& p: points){
         coords.push_back(p[0]);
