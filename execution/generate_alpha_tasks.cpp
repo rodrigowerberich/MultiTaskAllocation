@@ -10,7 +10,6 @@
 #include <PointMap.h>
 #include <chrono>
 #include <range.h>
-#include <delaunator.h>
 
 
 
@@ -96,7 +95,7 @@ void generate_alpha_tasks(std::tuple <std::string> values){
     Points points{point_map.begin(), point_map.end()};
     renderer.drawPoints({points});
     auto start = high_resolution_clock::now(); 
-    auto edge_storage = connectGraph2(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
+    auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << duration.count() << endl;
