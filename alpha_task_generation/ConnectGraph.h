@@ -4,6 +4,7 @@
 #include <vector>
 #include <TrigDefinitions.h>
 #include <EdgeStorage.h>
+#include <delaunator.h>
 
 // typedef bool (*collision_function_t)(float, float);
 // typedef float (*connection_function_t)(float, float);
@@ -93,6 +94,22 @@ EdgeStorage connectGraph(const Points& points, const CollisionFunction& collisio
             }
         }
     }
+    return edge_storage;
+}
+
+template <typename CollisionFunction, typename ConnectionFunction>
+EdgeStorage connectGraph2(const Points& points, const CollisionFunction& collision_fn, const ConnectionFunction& connection_fn){
+    std::vector<double> coords;
+    for(const auto& p: points){
+        coords.push_back(p[0]);
+        coords.push_back(p[1]);
+    }
+    delaunator::Delaunator d(coords);
+    EdgeStorage edge_storage;
+    for(std::size_t i = 0; i < d.triangles.size(); i+=3) {
+        TriangleI new_triangle = orderIndexes({d.triangles[i], d.triangles[i+1], d.triangles[i+2]});
+        EdgeStorage_addTriangleCheckingCollision(edge_storage, new_triangle, points, collision_fn, connection_fn);
+    }    
     return edge_storage;
 }
 

@@ -26,44 +26,64 @@ int main(int argc, char *argv[]) {
 
 #elif ALTERNATIVE == 1
 
-#include <InputParser.h>
-#include <iostream>
-#include <string>
-#include <ProblemRepresentation.h>
+#include <delaunator.h>
+#include <cstdio>
 #include <GnuPlotRenderer.h>
-#include <Drawable.h>
-using namespace std;
+#include <TrigDefinitions.h>
 
-int main(int argc, char *argv[]){
-    InputParser inputParser{argc, argv};
-    if(!inputParser.inputValid()){
-        return -1;
+static Point alpha(int i){
+
+    static std::random_device rd;
+    static std::mt19937 e2(rd());
+    std::uniform_real_distribution<> dist_x(-5, 5);
+    std::uniform_real_distribution<> dist_y(-5, 5);
+    Point p;
+    p = {dist_x(e2), dist_y(e2)}; 
+    return p;
+}
+
+int main() {
+    Points points;
+    std::vector<double> coords;
+    for(int i = 0; i < 5; i++){
+        auto p = alpha(i);
+        coords.push_back(p[0]);
+        coords.push_back(p[1]);
+        points.push_back(Point{p[0],p[1]});
     }
-    GnuPlotRenderer gp;
+    /* x0, y0, x1, y1, ... */
+    GnuPlotRenderer renderer;
+    renderer.setAxisRange(-5.0,5.0, -5.0, 5.0);
 
-    string file_name = inputParser.getFileName();
-    cout << "Parsing " << file_name << endl;
-    ProblemRepresentation problemRepresentation{file_name};
-    if(!problemRepresentation.isValid()){
-        cout << "\033[1;31mSomething is wrong with the problem representation file\033[0m" << endl;
-        cout << "\033[1;31m"<< problemRepresentation.getErrorMessage() << "\033[0m" << endl;
-        return -1;
+    renderer.holdOn();
+
+    //triangulation happens here
+    delaunator::Delaunator d(coords);
+
+    std::vector<std::pair<double, double>> p1s;
+    std::vector<std::pair<double, double>> p2s;
+    for(std::size_t i = 0; i < d.triangles.size(); i+=3) {
+        p1s.push_back(std::make_pair(d.coords[2 * d.triangles[i]],d.coords[2 * d.triangles[i] + 1]));
+        p2s.push_back(std::make_pair(d.coords[2 * d.triangles[i + 1]], d.coords[2 * d.triangles[i + 1] + 1]));
+
+        p1s.push_back(std::make_pair(d.coords[2 * d.triangles[i]],d.coords[2 * d.triangles[i] + 1]));
+        p2s.push_back(std::make_pair(d.coords[2 * d.triangles[i + 2]], d.coords[2 * d.triangles[i + 2] + 1]));
+
+        p1s.push_back(std::make_pair(d.coords[2 * d.triangles[i+1]],d.coords[2 * d.triangles[i+1] + 1]));
+        p2s.push_back(std::make_pair(d.coords[2 * d.triangles[i + 2]], d.coords[2 * d.triangles[i + 2] + 1]));
+
+        std::cout << d.coords[2 * d.triangles[i]] << ", " << d.coords[2 * d.triangles[i] + 1] << " <-> " << points[d.triangles[i]] << std::endl;
+        // printf(
+        //     "Triangle points: [[%f, %f], [%f, %f], [%f, %f]]\n",
+        //     d.coords[2 * d.triangles[i]],        //tx0
+        //     d.coords[2 * d.triangles[i] + 1],    //ty0
+        //     d.coords[2 * d.triangles[i + 1]],    //tx1
+        //     d.coords[2 * d.triangles[i + 1] + 1],//ty1
+        //     d.coords[2 * d.triangles[i + 2]],    //tx2
+        //     d.coords[2 * d.triangles[i + 2] + 1] //ty2
+        // );
     }
-    cout << "Parsed with success!!" << endl;
-    if(inputParser.showProblem()){
-        gp.holdOn();
-        auto bounding_box = problemRepresentation.getSearchArea()->getDrawable()->getBoundingBox();
-        gp.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
-        problemRepresentation.draw(gp);
-        gp.holdOn(false);
-        cout << "Type in something to progress...\n";
-        cin.get();
-        cout << "\33[1A\33[2K\r";
-
-    }
-
-    cout << "Done, bye!" << endl;
-    return 0;
+    renderer.draw(drawable::Lines{p1s,p2s});
 }
 
 #elif ALTERNATIVE == 2
@@ -82,4 +102,4 @@ int main(int argc, char *argv[]){
     return planner.run();
 }
 
-#endif
+#endif  
