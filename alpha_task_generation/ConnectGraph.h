@@ -22,7 +22,7 @@ bool checkEdgeCollisionOrConnection(const Edge& edge, const CollisionFunction& c
         }
         if(connection_fn(d.x, d.y)){
             connection_count++;
-            if(connection_count > 50){
+            if(connection_count > 90){
                 return true;
             }
         }

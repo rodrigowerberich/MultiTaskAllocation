@@ -23,6 +23,7 @@ private:
     bool insideMap(const Point& p);
 
 public:
+    PointMap(){}
     PointMap(double x_min, double x_max, double y_min, double y_max, size_t N, size_t M);
     ~PointMap(){}
     bool insert(const Point& p);
@@ -37,8 +38,10 @@ public:
     bool hasPointInRange(const Point& p, double radius);
     std::vector<Point>::iterator begin(){return m_points.begin();}
     std::vector<Point>::iterator end(){return m_points.end();}
+    std::vector<Point>::const_iterator begin() const{return m_points.begin();}
+    std::vector<Point>::const_iterator end() const{return m_points.end();}
     size_t size(){return m_points.size();}
-    const Point & operator[](size_t i){ return m_points[i]; }
+    const Point & operator[](size_t i) const{ return m_points[i]; }
     void show();
 };
 

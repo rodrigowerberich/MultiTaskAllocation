@@ -9,10 +9,10 @@
 class EdgeStorage{
 private:
     std::map<int,std::set<int>> m_storage;
-    EdgeI orderEdge(const EdgeI& edge);
+    EdgeI orderEdge(const EdgeI& edge) const;
 public:
     EdgeStorage(){};
-    bool containsEdge(const EdgeI& edge);
+    bool containsEdge(const EdgeI& edge) const;
     void addEdge(const EdgeI& edge);
     void addTriangle(const TriangleI& triangle);
     void removeEdge(const EdgeI& edge);

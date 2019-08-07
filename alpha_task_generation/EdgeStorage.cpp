@@ -1,14 +1,14 @@
 #include <EdgeStorage.h>
 
 
-EdgeI EdgeStorage::orderEdge(const EdgeI& edge){
+EdgeI EdgeStorage::orderEdge(const EdgeI& edge) const{
     if(edge[0] < edge[1]){
         return {edge[0], edge[1]};
     }else{
         return {edge[1], edge[0]};
     }
 }
-bool EdgeStorage::containsEdge(const EdgeI& edge){
+bool EdgeStorage::containsEdge(const EdgeI& edge) const{
     EdgeI search_edge = orderEdge(edge);
     const auto& connected_points = m_storage.find(search_edge[0]);
     if(connected_points != m_storage.end()){
