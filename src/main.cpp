@@ -1,5 +1,5 @@
 
-#define ALTERNATIVE 2
+#define ALTERNATIVE 3
 
 #if ALTERNATIVE == 0
 
@@ -114,6 +114,50 @@ int main(int argc, char *argv[]){
 #include <chrono>
 #include <unordered_map>
 #include <Dijkstra.h>
+#include <PointMap.h>
+
+class PathFinder{
+private:
+    PointMap m_point_map;
+    EdgeStorage m_edge_storage;
+    dijkstra::Result m_result;
+public:
+    PathFinder(PointMap point_map, EdgeStorage edge_storage, dijkstra::Result result):m_point_map{point_map},m_edge_storage{edge_storage},m_result{result}{}
+    // Points getPath(const Point& interest_point){
+    //     Points path;
+    //     path.insert(std::begin(path),interest_point);
+    //     PointI nearest_point_index = m_point_map.nearestPointIndex(interest_point);
+    //     path.insert(std::begin(path),m_point_map[nearest_point_index]);
+    //     PointI next_point_index = nearest_point_index;
+    //     while(std::get<1>(m_result[next_point_index])!=-1){
+    //         next_point_index = std::get<1>(m_result[next_point_index]);
+    //         path.insert(std::begin(path),m_point_map[next_point_index]);
+    //     }
+    //     return path;
+    // }
+    Points getPath(const Point& interest_point){
+        Points path;
+        path.insert(std::begin(path),interest_point);
+        PointI nearest_point_index = m_point_map.nearestPointIndex(interest_point);
+        double radius = Point::euclideanDistance(interest_point, m_point_map[nearest_point_index]);
+        PointsI nearest_points_index = m_point_map.pointsInRangeByIndex(interest_point, 2*radius);
+        double min_value = std::numeric_limits<double>::max();
+        for(const auto& pi: nearest_points_index){
+            double new_value = Point::euclideanDistance(interest_point, m_point_map[pi]) + std::get<0>(m_result[pi]);
+            if(new_value < min_value){
+                min_value = new_value;
+                nearest_point_index = pi;
+            }
+        }
+        path.insert(std::begin(path),m_point_map[nearest_point_index]);
+        PointI next_point_index = nearest_point_index;
+        while(std::get<1>(m_result[next_point_index])!=-1){
+            next_point_index = std::get<1>(m_result[next_point_index]);
+            path.insert(std::begin(path),m_point_map[next_point_index]);
+        }
+        return path;
+    }
+};
 
 static Point alpha(int i){
 
@@ -126,40 +170,15 @@ static Point alpha(int i){
     return p;
 }
 
-// static std::vector<std::tuple<double, PointI>> dijkstra(const std::vector<bool>& origins, const Points& points, const EdgeStorage& edge_storage){
-//     assert(origins.size() == points.size());
-//     std::vector<std::tuple<double,bool, PointI, EdgesI>> points_infos(points.size());
-//     for(const auto& i: util::lang::indices(points)){
-//         auto value = origins[i]?0:std::numeric_limits<double>::max();
-//         points_infos[i] = std::make_tuple(value, false, -1, edge_storage.getEdgesWith(i));
-//     }
-//     for(int curr_point_index = generate_next_point(points_infos); curr_point_index != -1; curr_point_index = generate_next_point(points_infos)){
-//         for(const auto& neighbour_edge_index: std::get<3>(points_infos[curr_point_index])){
-//             auto other_point_index = (neighbour_edge_index[0] == curr_point_index)? neighbour_edge_index[1]: neighbour_edge_index[0];
-//             auto new_cost = std::get<0>(points_infos[curr_point_index]) + Point::euclideanDistance(points[curr_point_index], points[other_point_index]);
-//             if(  new_cost < std::get<0>(points_infos[other_point_index]) ){
-//                 std::get<0>(points_infos[other_point_index]) = new_cost;
-//                 std::get<2>(points_infos[other_point_index]) = curr_point_index;
-//             }
-//         }
-//         std::get<1>(points_infos[curr_point_index]) = true;
-//     }
-//     std::vector<std::tuple<double, PointI>> result(points.size());
-//     for(const auto& i: util::lang::indices(points_infos)){
-//         result[i] = std::make_tuple(std::get<0>(points_infos[i]), std::get<2>(points_infos[i]));
-//     }
-//     return result;
-// }
-
 int main() {
     using namespace std::chrono;
     using namespace std;
     Points points;
     std::vector<double> coords;
-    constexpr int num_of_points = 30;
+    constexpr int num_of_points = 1000;
+    constexpr int num_of_origins = std::ceil(num_of_points/10.0);
     std::array<bool, num_of_points> origins;
     for(int i = 0; i < num_of_points; i++){
-        constexpr int num_of_origins = std::ceil(num_of_points/10.0);
         if(i < num_of_origins){
             origins[i] = true;
         }else{
@@ -194,20 +213,44 @@ int main() {
         p1s.push_back(std::make_pair(d.coords[2 * d.triangles[i+1]],d.coords[2 * d.triangles[i+1] + 1]));
         p2s.push_back(std::make_pair(d.coords[2 * d.triangles[i + 2]], d.coords[2 * d.triangles[i + 2] + 1]));
     }
-    constexpr int num_of_executions = 1;
+    auto result = dijkstra::dijkstra(origins, points, edge_storage);
+
+    renderer.draw(drawable::Lines{p1s,p2s});
+
+    PointMap point_map(-5,5,-5,5,10,10);
+    point_map.insert(std::begin(points), std::end(points));
+    
+    constexpr int num_of_executions = 10;
     auto start = high_resolution_clock::now(); 
-    std::vector<std::tuple<double,PointI>> result;
     for(int i:util::lang::range(0,num_of_executions)){
-        result = dijkstra::dijkstra(origins, points, edge_storage);
+        point_map.nearestPoint({0,0});
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << duration.count()/num_of_executions << endl;
 
-    renderer.draw(drawable::Lines{p1s,p2s});
-    
-    for(const auto& i:util::lang::indices(points)){
-        renderer.drawNamedPoint({points[i],std::to_string(i)+"->"+std::to_string(std::get<1>(result[i]))});
+    // for(const auto& i:util::lang::indices(points)){
+    //     renderer.drawNamedPoint({points[i],std::to_string(i)});
+    // }
+    PathFinder path_finder(point_map, edge_storage, result);
+    auto path = path_finder.getPath({0,0});
+    for(const auto& i:util::lang::indices(path)){
+        if( i < (path.size()-1) ){
+            renderer.drawLine({path[i], path[i+1], drawable::Color::Green});
+        }
+        // renderer.drawNamedPoint({path[i],std::to_string(i)});
+        renderer.drawPoint({path[i]});
+    }
+    // auto path2 = path_finder.getPath2({0,0});
+    // for(const auto& i:util::lang::indices(path2)){
+    //     if( i < (path2.size()-1) ){
+    //         renderer.drawLine({path2[i], path2[i+1], drawable::Color::Blue});
+    //     }
+    //     renderer.drawNamedPoint({path[i],std::to_string(i)});
+    //     renderer.drawPoint({path2[i], drawable::Color::Blue});
+    // }
+    for(const auto& i:util::lang::range(0,num_of_origins)){
+        renderer.drawPoint({points[i], drawable::Color::Red});
     }
 
 }

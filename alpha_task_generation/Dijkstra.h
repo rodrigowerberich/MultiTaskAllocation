@@ -10,8 +10,10 @@
 namespace dijkstra{
 int generate_next_point(std::vector<std::tuple<double,bool,PointI,EdgesI>>& points_infos);
 
+using Result = std::vector<std::tuple<double, PointI>>;
+
 template <typename T1, typename T2, typename T3>
-std::vector<std::tuple<double, PointI>> dijkstra(const T1& origins, const T2& points, const T3& edge_storage){
+Result dijkstra(const T1& origins, const T2& points, const T3& edge_storage){
     assert(origins.size() == points.size());
     std::vector<std::tuple<double,bool, PointI, EdgesI>> points_infos(points.size());
     for(const auto& i: util::lang::indices(points)){

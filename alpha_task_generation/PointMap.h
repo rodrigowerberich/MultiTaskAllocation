@@ -21,7 +21,8 @@ private:
     size_t calculateIndexY(const Point& p);
     size_t calculateIndex(const Point& p);
     bool insideMap(const Point& p);
-
+    PointI nearestPointSmall(const Point& p);
+    PointI nearestPointBig(const Point& p);
 public:
     PointMap(){}
     PointMap(double x_min, double x_max, double y_min, double y_max, size_t N, size_t M);
@@ -33,8 +34,20 @@ public:
     bool insert(const T& p){
         return insert(p[0], p[1]);
     }
+    template <typename Iterator>
+    bool insert(const Iterator& begin, const Iterator& end){
+        Iterator curr = begin;
+        while(curr != end){
+            insert(*curr);
+            ++curr;
+        }
+        return true;
+    }
     // double distanceToNearestPoint(const Point& p);
+    PointI nearestPointIndex(const Point& p);
+    Point nearestPoint(const Point& p);
     Points pointsInRange(const Point& p, double radius);
+    PointsI pointsInRangeByIndex(const Point& p, double radius);
     bool hasPointInRange(const Point& p, double radius);
     std::vector<Point>::iterator begin(){return m_points.begin();}
     std::vector<Point>::iterator end(){return m_points.end();}
