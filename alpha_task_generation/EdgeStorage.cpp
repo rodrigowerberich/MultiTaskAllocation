@@ -36,6 +36,21 @@ void EdgeStorage::removeEdge(const EdgeI& edge){
         }
     }
 }
+
+EdgesI EdgeStorage::getEdgesWith(const PointI& p) const{
+    EdgesI edges_i;
+    for(const auto& pair:m_storage){
+        auto first_point = pair.first;
+        for(const auto& second_point: pair.second){
+            if((p == first_point) || (p == second_point)){
+                edges_i.push_back({first_point, second_point});
+            }
+        }
+    }
+    return edges_i;
+}
+
+
 std::string EdgeStorage::toString(){
     std::string aux;
     for(const auto& connect_points: m_storage){

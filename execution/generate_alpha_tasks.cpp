@@ -10,7 +10,7 @@
 #include <PointMap.h>
 #include <chrono>
 #include <range.h>
-
+#include <Dijkstra.h>
 
 
 static Point alpha(int i, double x_min, double x_max, double y_min, double y_max){
@@ -33,7 +33,7 @@ static PointMap generate_points(const ProblemRepresentation& problemRepresentati
     double y_min = bounding_box.lower_left_y;
     double y_max = bounding_box.top_right_y;
 
-    constexpr double num_of_samples = 100;
+    constexpr double num_of_samples = 150;
     double circle_size = (x_max-x_min)*(y_max-y_min)/(num_of_samples);
 
     PointMap point_map(x_min, x_max, y_min, y_max, 10, 10);
@@ -94,7 +94,7 @@ static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(
     double y_min = bounding_box.lower_left_y;
     double y_max = bounding_box.top_right_y;
 
-    constexpr double num_of_samples = 5000;
+    constexpr double num_of_samples = 500;
     double circle_size = (x_max-x_min)*(y_max-y_min)/(num_of_samples);
 
     PointMap point_map(x_min, x_max, y_min, y_max, 10, 10);
@@ -193,12 +193,21 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     auto point_map = generate_points(problemRepresentation);
     Points points{point_map.begin(), point_map.end()};
     points.insert(std::begin(points), std::begin(edge_point_map), std::end(edge_point_map));
+    std::vector<bool> origins(points.size());
+    std::fill_n(std::begin(origins), edge_point_map.size(), true);
     renderer.drawPoints({points});
     auto start = high_resolution_clock::now(); 
     auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << duration.count() << endl;
+    
+    auto start1 = high_resolution_clock::now(); 
+    auto distance_mapping = dijkstra::dijkstra(origins, points, edge_storage);
+    auto stop1 = high_resolution_clock::now();
+    auto duration1 = duration_cast<microseconds>(stop1 - start1); 
+    cout << duration1.count() << endl;
+
     std::vector<std::pair<double,double>> p1s;
     std::vector<std::pair<double,double>> p2s;
     for(const auto& edge_i:edge_storage.toEdges()){
@@ -207,5 +216,12 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     }
     renderer.drawLines({p1s,p2s, drawable::Color::Yellow});
     problemRepresentation.draw(renderer);
+    for(const auto& i:util::lang::indices(points)){
+        if( i < edge_point_map.size()){
+            renderer.drawNamedPoint({points[i],std::to_string(i)});
+        }else{
+            renderer.drawNamedPoint({points[i],std::to_string(i)+"->"+std::to_string(std::get<1>(distance_mapping[i]))});
+        }
+    }
     std::cout << "Done\n";
 }

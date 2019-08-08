@@ -16,6 +16,7 @@ public:
     void addEdge(const EdgeI& edge);
     void addTriangle(const TriangleI& triangle);
     void removeEdge(const EdgeI& edge);
+    EdgesI getEdgesWith(const PointI& p) const;
     std::string toString();
     EdgesI toEdges();
 };
