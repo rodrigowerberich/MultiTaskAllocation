@@ -30,8 +30,8 @@
             "type":"T1",
             "position":{
                 "type":"2d",
-                "x":4.3,
-                "y":0.3
+                "x":2.5,
+                "y":3.5
             },
             "prerequisites":[]
         }

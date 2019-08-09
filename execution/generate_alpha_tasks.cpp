@@ -232,6 +232,9 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     // }
     for(const auto& task: *(problemRepresentation.getTasks())){
         auto target = task->getPosition();
+        if((*problemRepresentation.getConnectivityFunction())(target)){
+            continue;
+        }
         auto start2 = high_resolution_clock::now(); 
         auto path = smoothPath(path_finder.getPath(target), (*problemRepresentation.getObstructedArea()));
         auto stop2 = high_resolution_clock::now();
