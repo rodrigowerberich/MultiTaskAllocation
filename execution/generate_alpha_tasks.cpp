@@ -12,6 +12,7 @@
 #include <range.h>
 #include <Dijkstra.h>
 #include <DijkstraPathFinder.h>
+#include <PathSmoother.h>
 
 
 static Point alpha(int i, double x_min, double x_max, double y_min, double y_max){
@@ -95,7 +96,7 @@ static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(
     double y_min = bounding_box.lower_left_y;
     double y_max = bounding_box.top_right_y;
 
-    constexpr double num_of_samples = 1000;
+    constexpr double num_of_samples = 5000;
     double circle_size = (x_max-x_min)*(y_max-y_min)/(num_of_samples);
 
     PointMap point_map(x_min, x_max, y_min, y_max, 10, 10);
@@ -231,7 +232,13 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     // }
     for(const auto& task: *(problemRepresentation.getTasks())){
         auto target = task->getPosition();
-        auto path = path_finder.getPath(target);
+        auto start2 = high_resolution_clock::now(); 
+        auto path = smoothPath(path_finder.getPath(target), (*problemRepresentation.getObstructedArea()));
+        auto stop2 = high_resolution_clock::now();
+        auto duration2 = duration_cast<microseconds>(stop2 - start2); 
+        cout << duration2.count() << endl;
+
+        
         for(const auto& i:util::lang::indices(path)){
             if( i < (path.size()-1) ){
                 renderer.drawLine({path[i], path[i+1], drawable::Color::Green});
