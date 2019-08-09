@@ -1,5 +1,5 @@
 
-#define ALTERNATIVE 3
+#define ALTERNATIVE 2
 
 #if ALTERNATIVE == 0
 
@@ -114,50 +114,8 @@ int main(int argc, char *argv[]){
 #include <chrono>
 #include <unordered_map>
 #include <Dijkstra.h>
+#include <DijkstraPathFinder.h>
 #include <PointMap.h>
-
-class PathFinder{
-private:
-    PointMap m_point_map;
-    EdgeStorage m_edge_storage;
-    dijkstra::Result m_result;
-public:
-    PathFinder(PointMap point_map, EdgeStorage edge_storage, dijkstra::Result result):m_point_map{point_map},m_edge_storage{edge_storage},m_result{result}{}
-    // Points getPath(const Point& interest_point){
-    //     Points path;
-    //     path.insert(std::begin(path),interest_point);
-    //     PointI nearest_point_index = m_point_map.nearestPointIndex(interest_point);
-    //     path.insert(std::begin(path),m_point_map[nearest_point_index]);
-    //     PointI next_point_index = nearest_point_index;
-    //     while(std::get<1>(m_result[next_point_index])!=-1){
-    //         next_point_index = std::get<1>(m_result[next_point_index]);
-    //         path.insert(std::begin(path),m_point_map[next_point_index]);
-    //     }
-    //     return path;
-    // }
-    Points getPath(const Point& interest_point){
-        Points path;
-        path.insert(std::begin(path),interest_point);
-        PointI nearest_point_index = m_point_map.nearestPointIndex(interest_point);
-        double radius = Point::euclideanDistance(interest_point, m_point_map[nearest_point_index]);
-        PointsI nearest_points_index = m_point_map.pointsInRangeByIndex(interest_point, 2*radius);
-        double min_value = std::numeric_limits<double>::max();
-        for(const auto& pi: nearest_points_index){
-            double new_value = Point::euclideanDistance(interest_point, m_point_map[pi]) + std::get<0>(m_result[pi]);
-            if(new_value < min_value){
-                min_value = new_value;
-                nearest_point_index = pi;
-            }
-        }
-        path.insert(std::begin(path),m_point_map[nearest_point_index]);
-        PointI next_point_index = nearest_point_index;
-        while(std::get<1>(m_result[next_point_index])!=-1){
-            next_point_index = std::get<1>(m_result[next_point_index]);
-            path.insert(std::begin(path),m_point_map[next_point_index]);
-        }
-        return path;
-    }
-};
 
 static Point alpha(int i){
 
@@ -175,8 +133,8 @@ int main() {
     using namespace std;
     Points points;
     std::vector<double> coords;
-    constexpr int num_of_points = 1000;
-    constexpr int num_of_origins = std::ceil(num_of_points/10.0);
+    constexpr int num_of_points = 10000;
+    constexpr int num_of_origins = 1;//std::ceil(num_of_points/10.0);
     std::array<bool, num_of_points> origins;
     for(int i = 0; i < num_of_points; i++){
         if(i < num_of_origins){
@@ -232,7 +190,7 @@ int main() {
     // for(const auto& i:util::lang::indices(points)){
     //     renderer.drawNamedPoint({points[i],std::to_string(i)});
     // }
-    PathFinder path_finder(point_map, edge_storage, result);
+    dijkstra::PathFinder path_finder(point_map, edge_storage, result);
     auto path = path_finder.getPath({0,0});
     for(const auto& i:util::lang::indices(path)){
         if( i < (path.size()-1) ){

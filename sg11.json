@@ -48,8 +48,8 @@
             "type":"T1",
             "position":{
                 "type":"2d",
-                "x":4.3,
-                "y":0.3
+                "x":5.5,
+                "y":1.5
             },
             "prerequisites":["Task2"]
         },
@@ -58,8 +58,8 @@
             "type":"T2",
             "position":{
                 "type":"2d",
-                "x":-3.1,
-                "y":2.7
+                "x":0.5,
+                "y":-4.0
             },
             "prerequisites":["Task3", "Task4"]
         },
@@ -68,8 +68,8 @@
             "type":"T1",
             "position":{
                 "type":"2d",
-                "x":6.1,
-                "y":3.2
+                "x":6.0,
+                "y":4.0
             },
             "prerequisites":[]
         },
@@ -78,8 +78,8 @@
             "type":"T3",
             "position":{
                 "type":"2d",
-                "x":-6.3,
-                "y":2.7
+                "x":-1.0,
+                "y":4.0
             },
             "prerequisites":[]
         },
@@ -88,8 +88,8 @@
             "type":"T2",
             "position":{
                 "type":"2d",
-                "x":1.7,
-                "y":-1.35
+                "x":2.5,
+                "y":-4.0
             },
             "prerequisites":[]
         }

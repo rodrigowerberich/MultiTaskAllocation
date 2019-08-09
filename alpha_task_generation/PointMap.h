@@ -56,6 +56,13 @@ public:
     size_t size(){return m_points.size();}
     const Point & operator[](size_t i) const{ return m_points[i]; }
     void show();
+    double getXMin() const { return m_x_min; }
+    double getXMax() const { return m_x_max; }
+    double getYMin() const { return m_y_min; }
+    double getYMax() const { return m_y_max; }
+    size_t getM() const { return m_N; }
+    size_t getN() const { return m_M; }
+
 };
 
 #endif //POINTMAP_H__

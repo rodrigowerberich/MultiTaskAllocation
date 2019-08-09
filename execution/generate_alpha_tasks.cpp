@@ -11,6 +11,7 @@
 #include <chrono>
 #include <range.h>
 #include <Dijkstra.h>
+#include <DijkstraPathFinder.h>
 
 
 static Point alpha(int i, double x_min, double x_max, double y_min, double y_max){
@@ -33,7 +34,7 @@ static PointMap generate_points(const ProblemRepresentation& problemRepresentati
     double y_min = bounding_box.lower_left_y;
     double y_max = bounding_box.top_right_y;
 
-    constexpr double num_of_samples = 150;
+    constexpr double num_of_samples = 1000;
     double circle_size = (x_max-x_min)*(y_max-y_min)/(num_of_samples);
 
     PointMap point_map(x_min, x_max, y_min, y_max, 10, 10);
@@ -94,7 +95,7 @@ static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(
     double y_min = bounding_box.lower_left_y;
     double y_max = bounding_box.top_right_y;
 
-    constexpr double num_of_samples = 500;
+    constexpr double num_of_samples = 1000;
     double circle_size = (x_max-x_min)*(y_max-y_min)/(num_of_samples);
 
     PointMap point_map(x_min, x_max, y_min, y_max, 10, 10);
@@ -208,6 +209,11 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     auto duration1 = duration_cast<microseconds>(stop1 - start1); 
     cout << duration1.count() << endl;
 
+    point_map = PointMap(point_map.getXMin(), point_map.getXMax(), point_map.getYMin(), point_map.getYMax(), point_map.getN(), point_map.getM());
+    point_map.insert(std::begin(points), std::end(points));
+
+    dijkstra::PathFinder path_finder(point_map, edge_storage, distance_mapping);
+
     std::vector<std::pair<double,double>> p1s;
     std::vector<std::pair<double,double>> p2s;
     for(const auto& edge_i:edge_storage.toEdges()){
@@ -216,11 +222,21 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
     }
     renderer.drawLines({p1s,p2s, drawable::Color::Yellow});
     problemRepresentation.draw(renderer);
-    for(const auto& i:util::lang::indices(points)){
-        if( i < edge_point_map.size()){
-            renderer.drawNamedPoint({points[i],std::to_string(i)});
-        }else{
-            renderer.drawNamedPoint({points[i],std::to_string(i)+"->"+std::to_string(std::get<1>(distance_mapping[i]))});
+    // for(const auto& i:util::lang::indices(points)){
+    //     if( i < edge_point_map.size()){
+    //         renderer.drawNamedPoint({points[i],std::to_string(i)});
+    //     }else{
+    //         renderer.drawNamedPoint({points[i],std::to_string(i)+"->"+std::to_string(std::get<1>(distance_mapping[i]))});
+    //     }
+    // }
+    for(const auto& task: *(problemRepresentation.getTasks())){
+        auto target = task->getPosition();
+        auto path = path_finder.getPath(target);
+        for(const auto& i:util::lang::indices(path)){
+            if( i < (path.size()-1) ){
+                renderer.drawLine({path[i], path[i+1], drawable::Color::Green});
+            }
+            renderer.drawPoint({path[i]});
         }
     }
     std::cout << "Done\n";
