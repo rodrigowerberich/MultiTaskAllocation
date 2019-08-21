@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ProblemRepresentation.h>
 #include <TrigDefinitions.h>
+#include <TrigHelper.h>
 #include <random>
 #include <GnuPlotRenderer.h>
 #include <Points.h>
@@ -13,7 +14,7 @@
 #include <Dijkstra.h>
 #include <DijkstraPathFinder.h>
 #include <PathSmoother.h>
-
+#include <unordered_set>
 
 static Point alpha(int i, double x_min, double x_max, double y_min, double y_max){
     static std::random_device rd;
@@ -174,6 +175,36 @@ void generate_alpha_tasks(std::tuple <std::string> values){
     std::cout << "Done\n";
 }
 
+Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentation& problemRepresentation){
+    if (old_path.size() < 4){
+        return old_path;
+    }
+    Points all_points(std::begin(old_path), std::end(old_path));
+    std::vector<PointI> all_points_i;
+    for (size_t i = 0; i < all_points.size(); i++){
+        all_points_i.push_back(i);
+    }
+
+    for(int i = 0; i < (all_points_i.size() - 3);){
+        Point p{0,0};
+        bool valid = false;
+        std::tie(p, valid) = calculateIntersection(old_path[all_points_i[i]],old_path[all_points_i[i+1]],old_path[all_points_i[i+2]],old_path[all_points_i[i+3]]);
+        // Missing path validation for colission TODO <-- Continuar aqui
+        if(!valid || !problemRepresentation.getSearchArea()->containsPoint(p) || problemRepresentation.getObstructedArea()->containsPoint(p)){
+            i++;
+        }else{
+            all_points.push_back(p);
+            all_points_i.erase(std::begin(all_points_i)+i+1, std::begin(all_points_i)+i+3);
+            all_points_i.insert(std::begin(all_points_i)+i+1, all_points.size()-1);
+        }
+    }
+    Points new_path;
+    for(const auto& p_i: all_points_i){
+        new_path.push_back(all_points[p_i]);
+    }
+    return new_path;
+}
+
 void generate_alpha_tasks2(std::tuple <std::string> values){
     using namespace std;
     using namespace std::chrono;
@@ -241,12 +272,20 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
         auto duration2 = duration_cast<microseconds>(stop2 - start2); 
         cout << duration2.count() << endl;
 
+        auto path2 = reducePathNumberOfPoints(path, problemRepresentation);
         
         for(const auto& i:util::lang::indices(path)){
             if( i < (path.size()-1) ){
                 renderer.drawLine({path[i], path[i+1], drawable::Color::Green});
             }
             renderer.drawPoint({path[i]});
+        }
+
+        for(const auto& i:util::lang::indices(path2)){
+            if( i < (path2.size()-1) ){
+                renderer.drawLine({path2[i], path2[i+1], drawable::Color::DeepPink});
+            }
+            renderer.drawPoint({path2[i], drawable::Color::Black});
         }
     }
     std::cout << "Done\n";

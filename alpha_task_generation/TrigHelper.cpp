@@ -95,3 +95,67 @@ bool segmentsDoIntersect(const Point& p1, const Point& q1, const Point& p2, cons
 
     return false;
 }
+
+struct LineRepresentation{
+    double m;
+    double b;
+    bool parallel_to_y;
+    double x_value;
+};
+
+LineRepresentation calculateLineRepresentation(const Point& p, const Point& q){
+    double delta_x = (p.x - q.x);
+    if ( std::fabs(delta_x) <= 2*std::numeric_limits<double>::min()){
+        return LineRepresentation{0.0,0.0,true,p.x};
+    }
+    return LineRepresentation{
+        (p.y-q.y)/delta_x,
+        ((p.x*q.y)-(p.y*q.x))/delta_x,
+        false,
+        0.0        
+    };
+}
+
+std::tuple<Point, bool> calculateIntersection(const Point& p1, const Point& q1, const Point& p2, const Point& q2){
+    LineRepresentation l1 = calculateLineRepresentation(p1,q1);
+    LineRepresentation l2 = calculateLineRepresentation(p2,q2);
+    if(!l1.parallel_to_y && !l2.parallel_to_y){
+        // No line is parallel to y axis, so both can be described by
+        // y = m*x+b
+        double delta_m = (l1.m -l2.m);
+        if( std::fabs(delta_m) <= 2*std::numeric_limits<double>::min()){
+            // If both m are equal, the lines are parallel
+            return std::make_tuple(Point{0,0}, false);
+        }
+        // If not parallel, the following equations calculate the meeting point
+        return std::make_tuple(
+            Point{
+                (l2.b-l1.b)/delta_m,
+                ((l1.m*l2.b)-(l2.m*l1.b))/delta_m
+            },
+            true
+        );
+    }else if(l1.parallel_to_y && l2.parallel_to_y){
+        // In this case both lines are parallel
+        return std::make_tuple(Point{0,0}, false);
+    }else{
+        // We assume the first line is parallel to y-axis, if not, we 
+        // not we swap them
+        if(l2.parallel_to_y){
+            std::swap(l1,l2);
+        }
+        // Since l1 is parallel to the y axis, its equation is
+        //  x = c (c constant)
+        // The meeting point with a line with equation
+        //  y = m*x+b
+        // will be the point
+        // (c, m*c+b)
+        return std::make_tuple(
+            Point(
+                l1.x_value, 
+                l2.m*l1.x_value+l2.b
+            ), 
+            true
+        );
+    }
+}

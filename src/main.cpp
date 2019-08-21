@@ -213,4 +213,50 @@ int main() {
 
 }
 
+#elif ALTERNATIVE == 4  
+
+#include <delaunator.h>
+#include <cstdio>
+#include <GnuPlotRenderer.h>
+#include <TrigDefinitions.h>
+#include <TrigHelper.h>
+#include <EdgeStorage.h>
+#include <ConnectGraph.h>
+#include <range.h>
+#include <chrono>
+#include <unordered_map>
+
+void calculateAndPlotIntersection(const Point& p1, const Point& q1, const Point& p2, const Point& q2, GnuPlotRenderer & renderer){
+    Point p{0,0};
+    bool valid = false;
+
+    std::tie(p, valid) = calculateIntersection(p1,q1,p2,q2);
+    if(!valid){
+        std::cout << "Lines {" << p1 << ", " << q1 << "} and {" << p2 << ", " << q2 <<"} do not intersect" << std::endl;
+    }else{
+        std::cout << "Lines {" << p1 << ", " << q1 << "} and {" << p2 << ", " << q2 <<"} intersect at " << p << std::endl;
+        renderer.drawLine({p1,q1});
+        renderer.drawLine({p2,q2});
+        renderer.drawPoint({p});
+    }
+}
+
+
+int main() {
+    using namespace std::chrono;
+    using namespace std;
+    GnuPlotRenderer renderer;
+    renderer.setAxisRange(-5.0,5.0, -5.0, 5.0);
+
+    renderer.holdOn();
+
+    calculateAndPlotIntersection({2,3}, {2,2}, {-1,4}, {-1,-4}, renderer);
+    calculateAndPlotIntersection({1,2}, {3,4}, {3,2}, {5,1}, renderer);
+    calculateAndPlotIntersection({2,3}, {2,2}, {3,2}, {5,1}, renderer);
+    calculateAndPlotIntersection({1,2}, {3,4}, {-1,4}, {-1,-4}, renderer);
+    calculateAndPlotIntersection({0,3}, {1,4}, {0,7}, {1,6}, renderer);
+    calculateAndPlotIntersection({0,3}, {1,4}, {1,2}, {3,4}, renderer);
+
+}
+
 #endif  
