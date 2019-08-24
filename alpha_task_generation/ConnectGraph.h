@@ -60,7 +60,7 @@ EdgeStorage connectGraph(const Points& points, const CollisionFunction& collisio
     delaunator::Delaunator d(coords);
     EdgeStorage edge_storage;
     for(std::size_t i = 0; i < d.triangles.size(); i+=3) {
-        TriangleI new_triangle = orderIndexes({d.triangles[i], d.triangles[i+1], d.triangles[i+2]});
+        TriangleI new_triangle = orderIndexes({static_cast<int>(d.triangles[i]), static_cast<int>(d.triangles[i+1]), static_cast<int>(d.triangles[i+2])});
         EdgeStorage_addTriangleCheckingCollision(edge_storage, new_triangle, points, collision_fn, connection_fn);
     }    
     return edge_storage;

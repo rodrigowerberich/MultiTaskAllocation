@@ -22,8 +22,8 @@ public:
     double getRadius() const;
     drawable::Color getColor() const;
     virtual void setColor(drawable::Color color){m_color = color;};
-    virtual bool addDrawable(const Drawable* drawable) {return false;}
-    virtual bool removeDrawable(const Drawable* drawable){return false;}
+    virtual bool addDrawable(const Drawable*) {return false;}
+    virtual bool removeDrawable(const Drawable*){return false;}
     virtual std::unique_ptr<Drawable> clone()  const;
     virtual BoundingBox getBoundingBox() const;
 };

@@ -9,7 +9,6 @@ bool checkEdgeCollision(const Edge& edge, const CollisionFunction& collision_fn)
     const Point& a = edge[0];
     const Point& b = edge[1];
     Point c = b-a;
-    int connection_count = 0;
     for(int i=0; i<100; i++){
         Point d = a + (c*i)/100;
         if(collision_fn(d.x, d.y)){

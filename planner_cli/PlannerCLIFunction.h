@@ -12,7 +12,7 @@ protected:
     std::string m_name;
     size_t m_num_of_arguments;
 public:
-    PlannerCLIFunction(std::string name, int num_of_args):m_name{name}, m_num_of_arguments{(num_of_args<0)?0:num_of_args}{}
+    PlannerCLIFunction(std::string name, int num_of_args):m_name{name}, m_num_of_arguments{(num_of_args<0)?0: static_cast<size_t>(num_of_args)}{}
     virtual std::string execute(std::deque<std::string> arguments) const = 0;
     const std::string & getName() const{return m_name;}
     virtual const std::string & getDescription() const = 0;

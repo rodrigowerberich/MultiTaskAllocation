@@ -16,7 +16,7 @@
 #include <PathSmoother.h>
 #include <unordered_set>
 
-static Point alpha(int i, double x_min, double x_max, double y_min, double y_max){
+static Point alpha(int , double x_min, double x_max, double y_min, double y_max){
     static std::random_device rd;
     static std::mt19937 e2(rd());
     std::uniform_real_distribution<> dist_x(x_min, x_max);
@@ -52,7 +52,9 @@ static PointMap generate_points(const ProblemRepresentation& problemRepresentati
     return point_map;
 }
 
-static void alpha_figure_add_edge(EdgeStorage& edges, std::size_t i, std::size_t j, bool only_outer){
+static void alpha_figure_add_edge(EdgeStorage& edges, std::size_t i_s, std::size_t j_s, bool only_outer){
+    int i = static_cast<int>(i_s);
+    int j = static_cast<int>(j_s);
     if( edges.containsEdge({i,j}) || edges.containsEdge({j,i})){
         if(only_outer){
             edges.removeEdge({j,i});
@@ -89,7 +91,6 @@ static EdgeStorage alpha_figure(const PointMap& points, double alpha, bool only_
 
 static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(const ProblemRepresentation& problemRepresentation){
     const auto & connectivity_function = problemRepresentation.getConnectivityFunction();
-    const auto & search_area = problemRepresentation.getSearchArea();
     auto bounding_box = connectivity_function->getDrawable()->getBoundingBox();
     
     double x_min = bounding_box.lower_left_x;
@@ -133,7 +134,7 @@ static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(
         edge_map.insert(point_map[index_mapping[index]]);
     }
     for(const auto& edge_i:alpha_fig.toEdges()){
-        edge_edges.addEdge({index_reverse_mapping[edge_i[0]],index_reverse_mapping[edge_i[1]]});
+        edge_edges.addEdge({static_cast<int>(index_reverse_mapping[edge_i[0]]),static_cast<int>(index_reverse_mapping[edge_i[1]])});
     }
     return std::make_tuple(edge_map, edge_edges);
 }
@@ -148,7 +149,7 @@ Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentat
         all_points_i.push_back(i);
     }
 
-    for(int i = 0; i < (all_points_i.size() - 3);){
+    for(int i = 0; i < (static_cast<int32_t>(all_points_i.size()) - 3);){
         Point p{0,0};
         bool valid = false;
         std::tie(p, valid) = calculateIntersection(old_path[all_points_i[i]],old_path[all_points_i[i+1]],old_path[all_points_i[i+2]],old_path[all_points_i[i+3]]);
