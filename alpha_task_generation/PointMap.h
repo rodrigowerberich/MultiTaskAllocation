@@ -9,7 +9,6 @@
 class PointMap{
 private:
     std::vector<Point> m_points;
-    std::vector<std::vector<size_t>> m_points_mapping;
     std::vector<size_t> m_points_ordering;
     double m_x_min;
     double m_x_max;
@@ -17,6 +16,7 @@ private:
     double m_y_max;
     size_t m_N;
     size_t m_M;
+    std::vector<std::vector<size_t>> m_points_mapping;
     size_t calculateIndexX(const Point& p);
     size_t calculateIndexY(const Point& p);
     size_t calculateIndex(const Point& p);

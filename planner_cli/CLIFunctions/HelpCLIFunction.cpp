@@ -9,7 +9,7 @@ HelpCLIFunction::HelpCLIFunction(std::string name, const HelpCLIFunction::Functi
         m_functions.push_back(std::make_tuple(name_function_pair.first, name_function_pair.second->getNumOfArguments(), name_function_pair.second->getDescription()));
     }
 }
-std::string HelpCLIFunction::execute(std::deque<std::string> arguments) const{
+std::string HelpCLIFunction::execute(std::deque<std::string>) const{
     using namespace std;
     cout << "-----------------------------------------------------\n";
     cout << "Displaying available commands descriptions\n";

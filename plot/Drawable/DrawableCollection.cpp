@@ -19,7 +19,7 @@ bool drawable::DrawableCollection::addDrawable(const Drawable* drawable) {
     m_collection.insert(std::move(new_drawable));
     return true;
 }
-bool drawable::DrawableCollection::removeDrawable(const Drawable* drawable) {
+bool drawable::DrawableCollection::removeDrawable(const Drawable*) {
     return false;
 }
 

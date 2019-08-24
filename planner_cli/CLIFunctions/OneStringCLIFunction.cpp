@@ -1,6 +1,6 @@
 #include <OneStringCLIFunction.h>
 
-std::tuple <bool, std::string> one_string_verifier(std::deque<std::string> deque){
+std::tuple <bool, std::string> one_string_verifier(std::deque<std::string>){
     return std::make_tuple<bool, std::string>(true, "");
 }
 std::tuple <std::string> one_string_parser(std::deque<std::string> deque){

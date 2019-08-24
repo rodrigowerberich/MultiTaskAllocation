@@ -33,7 +33,7 @@ TriangleI orderIndexes(const TriangleI& indexes){
     }
 }
 
-PointsI neighborhood_k(int index, const Points& points, int k){
+PointsI neighborhood_k(int index, const Points& points, int){
     std::unique_ptr<Node> node = nullptr;
     const Point& target_point = points[index];
     for(size_t i=0; i< points.size(); i++){

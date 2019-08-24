@@ -11,7 +11,9 @@ static std::string color_to_matplotlib_string(drawable::Color color){
     case drawable::Color::Blue :
         return "b";
     case drawable::Color::Red :
-        return "r";    
+        return "r";
+    default:
+        return "k";
     }
     return "g";
 }
@@ -22,7 +24,7 @@ void drawPolygon(const drawable::Polygon<N,Numeric>& polygon, std::string stroke
     plt::plot(polygon.getXPoints(), polygon.getYPoints(), color_to_matplotlib_string(polygon.getColor())+stroke_style);
 }
 
-void PyPlotRenderer::drawRectangle(const drawable::Rectangle& rect){
+void PyPlotRenderer::drawRectangle(const drawable::Rectangle&){
     std::cout << "Aqui drawRectangle\n";
     plt::plot({2.0},{3.0},"r*");
     // plt::plot(polygon.getXPoints(), polygon.getYPoints(), color_to_matplotlib_string(polygon.getColor())+stroke_style);
