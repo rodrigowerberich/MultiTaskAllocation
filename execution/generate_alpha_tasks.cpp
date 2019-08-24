@@ -138,43 +138,6 @@ static std::tuple<PointMap,EdgeStorage> generate_edge_points_of_connection_area(
     return std::make_tuple(edge_map, edge_edges);
 }
 
-void generate_alpha_tasks(std::tuple <std::string> values){
-    using namespace std;
-    using namespace std::chrono;
-    using namespace util::lang;
-    auto file_name = std::get<0>(values);
-    ProblemRepresentation problemRepresentation{file_name};
-    if(!problemRepresentation.isValid()){
-        cout << "\033[1;31mSomething is wrong with the problem representation file\033[0m" << endl;
-        cout << "\033[1;31m"<< problemRepresentation.getErrorMessage() << "\033[0m" << endl;
-        return;
-    }
-    GnuPlotRenderer renderer;
-    renderer.holdOn();
-    const auto & search_area = problemRepresentation.getSearchArea();
-    auto bounding_box = search_area->getDrawable()->getBoundingBox();
-    renderer.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
-
-
-    auto point_map = generate_points(problemRepresentation);
-    Points points{point_map.begin(), point_map.end()};
-    renderer.drawPoints({points});
-    auto start = high_resolution_clock::now(); 
-    auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start); 
-    cout << duration.count() << endl;
-    std::vector<std::pair<double,double>> p1s;
-    std::vector<std::pair<double,double>> p2s;
-    for(const auto& edge_i:edge_storage.toEdges()){
-        p1s.push_back(std::make_pair(points[edge_i[0]][0], points[edge_i[0]][1]));
-        p2s.push_back(std::make_pair(points[edge_i[1]][0], points[edge_i[1]][1]));
-    }
-    renderer.drawLines({p1s,p2s, drawable::Color::Yellow});
-    problemRepresentation.draw(renderer);
-    std::cout << "Done\n";
-}
-
 Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentation& problemRepresentation){
     if (old_path.size() < 4){
         return old_path;
@@ -208,7 +171,7 @@ Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentat
     return new_path;
 }
 
-void generate_alpha_tasks2(std::tuple <std::string> values){
+void generate_alpha_tasks(std::tuple <std::string> values){
     using namespace std;
     using namespace std::chrono;
     using namespace util::lang;
@@ -276,7 +239,7 @@ void generate_alpha_tasks2(std::tuple <std::string> values){
         cout << duration2.count() << endl;
 
         auto path2 = reducePathNumberOfPoints(path, problemRepresentation);
-        
+
         for(const auto& i:util::lang::indices(path)){
             if( i < (path.size()-1) ){
                 renderer.drawLine({path[i], path[i+1], drawable::Color::Green});

@@ -21,7 +21,6 @@ PlannerCLI::PlannerCLI(int argc, char *argv[]):m_started_empty{false}{
     addCLIFunction<OneStringCLIFunction>("parse", "Parse a file and prints out if it is correctly formated\nUsage: parse filename", parse);
     addCLIFunction<OneStringCLIFunction>("visualize", "Visualize the problem representation file in a 2d plot\nUsage: visualize filename", visualize);
     addCLIFunction<OneStringCLIFunction>("generate_alpha_tasks", "Calculate the alpha tasks of a given problem representation\nUsage: generate_alpha_tasks filename", generate_alpha_tasks);
-    addCLIFunction<OneStringCLIFunction>("generate_alpha_tasks2", "Calculate the alpha tasks of a given problem representation\nUsage: generate_alpha_tasks filename", generate_alpha_tasks2);
 
     // After adding all comands, create help command
     addCLIFunction<HelpCLIFunction>("help", m_functions);
