@@ -189,8 +189,11 @@ Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentat
         Point p{0,0};
         bool valid = false;
         std::tie(p, valid) = calculateIntersection(old_path[all_points_i[i]],old_path[all_points_i[i+1]],old_path[all_points_i[i+2]],old_path[all_points_i[i+3]]);
-        // Missing path validation for colission TODO <-- Continuar aqui
-        if(!valid || !problemRepresentation.getSearchArea()->containsPoint(p) || problemRepresentation.getObstructedArea()->containsPoint(p)){
+        bool search_area_do_not_contain_point = !problemRepresentation.getSearchArea()->containsPoint(p);
+        bool point_inside_obstacle = problemRepresentation.getObstructedArea()->containsPoint(p);
+        bool new_edge_colides_with_obstacle =  checkEdgeCollision({old_path[all_points_i[i]], p}, (*problemRepresentation.getObstructedArea())) || 
+                                               checkEdgeCollision({old_path[all_points_i[i+3]], p}, (*problemRepresentation.getObstructedArea()));
+        if(!valid || search_area_do_not_contain_point || point_inside_obstacle  || new_edge_colides_with_obstacle){
             i++;
         }else{
             all_points.push_back(p);
