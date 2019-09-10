@@ -15,6 +15,9 @@
 #include <DijkstraPathFinder.h>
 #include <PathSmoother.h>
 #include <unordered_set>
+#include <AlphaTasks.h>
+#include <AlphaTaskToJson.h>
+#include <fstream>
 
 static Point alpha(int , double x_min, double x_max, double y_min, double y_max){
     static std::random_device rd;
@@ -172,9 +175,52 @@ Points reducePathNumberOfPoints(const Points& old_path, const ProblemRepresentat
     return new_path;
 }
 
+static PointMap determine_edge_of_connectivity_region(const ProblemRepresentation& problemRepresentation){
+    // Determining the edge of the connectivity region
+    std::cout << "Generating map points\n";
+    PointMap edge_point_map;
+    std::tie(edge_point_map, std::ignore) = generate_edge_points_of_connection_area(problemRepresentation);
+    return edge_point_map;
+}
+
+static Points join_point_maps(const PointMap& point_map, const PointMap& edge_point_map){
+    // Join the points on the edge of the connectivy region with the valid point map of the region
+    Points points{point_map.begin(), point_map.end()};
+    points.insert(std::begin(points), std::begin(edge_point_map), std::end(edge_point_map));
+    return points;
+}
+
+static std::vector<bool> get_origin_vector(const Points& points, const PointMap& edge_point_map){
+    // Create a vector of bool that indicate which points are origins that we want to connect to. (The points on the edge of the connectivy region)
+    std::vector<bool> origins(points.size());
+    std::fill_n(std::begin(origins), edge_point_map.size(), true);
+    return origins;
+}
+
+static PointMap organize_point_map(const PointMap& point_map, const Points& points){
+    auto organized_point_map = PointMap(point_map.getXMin(), point_map.getXMax(), point_map.getYMin(), point_map.getYMax(), point_map.getN(), point_map.getM());
+    organized_point_map.insert(std::begin(points), std::end(points));
+    return organized_point_map;
+}
+
+static AlphaTask calculate_alpha_task(const ProblemRepresentation& problemRepresentation, const dijkstra::PathFinder& path_finder, const std::unique_ptr<Task>& task){
+    auto path = path_finder.getPath(task->getPosition());
+    auto smoothed_path = smoothPath(path, (*problemRepresentation.getObstructedArea()));
+    auto reduced_path = reducePathNumberOfPoints(smoothed_path, problemRepresentation);
+    // The alpha tasks are all the points leading up to the task position, since the reduced path contains the original task, we add all but the last point
+    return {task->getName(), Points{ reduced_path.begin(), reduced_path.end()-1 }};
+}
+
+static void save_to_output_file(const std::string& file_name, const AlphaTasks& alpha_tasks){
+    auto output_file_name = file_name.substr(0, file_name.find_first_of('.')) + ".alpha.json";
+    std::cout << "Saving the output to " << output_file_name << std::endl;
+    std::ofstream output_file(output_file_name);
+    output_file << jsonifier::prettify(jsonifier::toJson(alpha_tasks));
+    output_file.close();
+}
+
 void generate_alpha_tasks(std::tuple <std::string> values){
     using namespace std;
-    using namespace std::chrono;
     using namespace util::lang;
     auto file_name = std::get<0>(values);
     ProblemRepresentation problemRepresentation{file_name};
@@ -183,35 +229,81 @@ void generate_alpha_tasks(std::tuple <std::string> values){
         cout << "\033[1;31m"<< problemRepresentation.getErrorMessage() << "\033[0m" << endl;
         return;
     }
+    // Determining the edge of the connectivity region
+    PointMap edge_point_map = determine_edge_of_connectivity_region(problemRepresentation);
+    // Randomly generate a cloud of points on valid positions according to the problem representation 
+    auto point_map = generate_points(problemRepresentation);
+    // Join the points on the edge of the connectivy region with the valid point map of the region
+    auto points = join_point_maps(point_map, edge_point_map);
+    // Create a vector of bool that indicate which points are origins that we want to connect to. (The points on the edge of the connectivy region)
+    auto origins = get_origin_vector(points, edge_point_map);
+    std::cout << "Connecting points in the map\n";
+    // Calculate the edges of our graph, this graph must connect all the points on the graph without passing through obstructed areas or crossing over other edges.
+    auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
+    // Runs the dijkstra algorithm on our graph, this stores the total distance to the nearest origin and which is the next node to follow to get there
+    std::cout << "Calculating distance from connectivity region\n";
+    auto distance_mapping = dijkstra::dijkstra(origins, points, edge_storage);
+    // Insert all points into a PointMap structure in order to make spacial searching faster
+    auto complete_point_map = organize_point_map(point_map, points);
+    // Structure that helps to find the closest origin point in the point map along the edges
+    dijkstra::PathFinder path_finder(complete_point_map, edge_storage, distance_mapping);
+    // Now we calculate the alpha tasks
+    std::cout << "Calculating alpha tasks\n";
+    AlphaTasks alpha_tasks;
+    for(const auto& task: *(problemRepresentation.getTasks())){
+        auto target = task->getPosition();
+        // If target task is inside a connectivity region, there is no need to calculate an alpha task
+        if((*problemRepresentation.getConnectivityFunction())(target)){
+            continue;
+        }
+        // The alpha tasks are all the points leading up to the task position, since the reduced path contains the original task, we add all but the last point
+        alpha_tasks.push_back(calculate_alpha_task(problemRepresentation, path_finder, task));
+    }
+    // Saving the output to the output file
+    save_to_output_file(file_name, alpha_tasks);
+    std::cout << "Done\n";
+}
+
+void generate_and_visualize_alpha_tasks(std::tuple <std::string> values){
+    using namespace std;
+    using namespace util::lang;
+    auto file_name = std::get<0>(values);
+    ProblemRepresentation problemRepresentation{file_name};
+    if(!problemRepresentation.isValid()){
+        cout << "\033[1;31mSomething is wrong with the problem representation file\033[0m" << endl;
+        cout << "\033[1;31m"<< problemRepresentation.getErrorMessage() << "\033[0m" << endl;
+        return;
+    }
+    
     GnuPlotRenderer renderer;
     renderer.holdOn();
     const auto & search_area = problemRepresentation.getSearchArea();
     auto bounding_box = search_area->getDrawable()->getBoundingBox();
     renderer.setAxisRange(1.1*bounding_box.lower_left_x, 1.1*bounding_box.top_right_x, 1.1*bounding_box.lower_left_y, 1.1*bounding_box.top_right_y);
-    PointMap edge_point_map;
-    std::tie(edge_point_map, std::ignore) = generate_edge_points_of_connection_area(problemRepresentation);
-    auto point_map = generate_points(problemRepresentation);
-    Points points{point_map.begin(), point_map.end()};
-    points.insert(std::begin(points), std::begin(edge_point_map), std::end(edge_point_map));
-    std::vector<bool> origins(points.size());
-    std::fill_n(std::begin(origins), edge_point_map.size(), true);
-    renderer.drawPoints({points});
-    auto start = high_resolution_clock::now(); 
-    auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start); 
-    cout << duration.count() << endl;
     
-    auto start1 = high_resolution_clock::now(); 
+    // Determining the edge of the connectivity region
+    PointMap edge_point_map = determine_edge_of_connectivity_region(problemRepresentation);
+    // Randomly generate a cloud of points on valid positions according to the problem representation 
+    auto point_map = generate_points(problemRepresentation);
+    // Join the points on the edge of the connectivy region with the valid point map of the region
+    auto points = join_point_maps(point_map, edge_point_map);
+
+    renderer.drawPoints({points});
+    
+    // Create a vector of bool that indicate which points are origins that we want to connect to. (The points on the edge of the connectivy region)
+    auto origins = get_origin_vector(points, edge_point_map);
+    
+    
+    std::cout << "Connecting points in the map\n";
+    // Calculate the edges of our graph, this graph must connect all the points on the graph without passing through obstructed areas or crossing over other edges.
+    auto edge_storage = connectGraph(points, (*problemRepresentation.getObstructedArea()), (*problemRepresentation.getConnectivityFunction()));
+    // Runs the dijkstra algorithm on our graph, this stores the total distance to the nearest origin and which is the next node to follow to get there
+    std::cout << "Calculating distance from connectivity region\n";
     auto distance_mapping = dijkstra::dijkstra(origins, points, edge_storage);
-    auto stop1 = high_resolution_clock::now();
-    auto duration1 = duration_cast<microseconds>(stop1 - start1); 
-    cout << duration1.count() << endl;
-
-    point_map = PointMap(point_map.getXMin(), point_map.getXMax(), point_map.getYMin(), point_map.getYMax(), point_map.getN(), point_map.getM());
-    point_map.insert(std::begin(points), std::end(points));
-
-    dijkstra::PathFinder path_finder(point_map, edge_storage, distance_mapping);
+    // Insert all points into a PointMap structure in order to make spacial searching faster
+    auto complete_point_map = organize_point_map(point_map, points);
+    // Structure that helps to find the closest origin point in the point map along the edges
+    dijkstra::PathFinder path_finder(complete_point_map, edge_storage, distance_mapping);
 
     std::vector<std::pair<double,double>> p1s;
     std::vector<std::pair<double,double>> p2s;
@@ -221,39 +313,32 @@ void generate_alpha_tasks(std::tuple <std::string> values){
     }
     renderer.drawLines({p1s,p2s, drawable::Color::Yellow});
     problemRepresentation.draw(renderer);
-    // for(const auto& i:util::lang::indices(points)){
-    //     if( i < edge_point_map.size()){
-    //         renderer.drawNamedPoint({points[i],std::to_string(i)});
-    //     }else{
-    //         renderer.drawNamedPoint({points[i],std::to_string(i)+"->"+std::to_string(std::get<1>(distance_mapping[i]))});
-    //     }
-    // }
+
+    // Now we calculate the alpha tasks
+    std::cout << "Calculating alpha tasks\n";
+    AlphaTasks alpha_tasks;
     for(const auto& task: *(problemRepresentation.getTasks())){
         auto target = task->getPosition();
+        // If target task is inside a connectivity region, there is no need to calculate an alpha task
         if((*problemRepresentation.getConnectivityFunction())(target)){
             continue;
         }
-        auto start2 = high_resolution_clock::now(); 
-        auto path = smoothPath(path_finder.getPath(target), (*problemRepresentation.getObstructedArea()));
-        auto stop2 = high_resolution_clock::now();
-        auto duration2 = duration_cast<microseconds>(stop2 - start2); 
-        cout << duration2.count() << endl;
-
-        auto path2 = reducePathNumberOfPoints(path, problemRepresentation);
-
-        for(const auto& i:util::lang::indices(path)){
-            if( i < (path.size()-1) ){
-                renderer.drawLine({path[i], path[i+1], drawable::Color::Green});
+        // The alpha tasks are all the points leading up to the task position, since the reduced path contains the original task, we add all but the last point
+        auto alpha_task = calculate_alpha_task(problemRepresentation, path_finder, task);
+        alpha_tasks.push_back(alpha_task);
+        for(const int& i:util::lang::indices(alpha_task)){
+            if( i < (static_cast<int>(alpha_task.size())-1) ){
+                renderer.drawLine({alpha_task[i], alpha_task[i+1], drawable::Color::DeepPink});
             }
-            renderer.drawPoint({path[i]});
-        }
-
-        for(const auto& i:util::lang::indices(path2)){
-            if( i < (path2.size()-1) ){
-                renderer.drawLine({path2[i], path2[i+1], drawable::Color::DeepPink});
+            if( i == (static_cast<int>(alpha_task.size())-1) ){
+                renderer.drawLine({alpha_task[i], target, drawable::Color::DeepPink});
             }
-            renderer.drawPoint({path2[i], drawable::Color::Black});
+            renderer.drawPoint({alpha_task[i], drawable::Color::Black});
         }
+        renderer.drawPoint({target, drawable::Color::Black});
+
     }
+    // Saving the output to the output file
+    save_to_output_file(file_name, alpha_tasks);
     std::cout << "Done\n";
 }

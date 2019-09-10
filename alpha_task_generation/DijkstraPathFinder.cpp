@@ -16,7 +16,7 @@ PathFinder::PathFinder(PointMap point_map, EdgeStorage edge_storage, dijkstra::R
 //     }
 //     return path;
 // }
-Points PathFinder::getPath(const Point& interest_point){
+Points PathFinder::getPath(const Point& interest_point) const{
     Points path;
     path.insert(std::begin(path),interest_point);
     PointI nearest_point_index = m_point_map.nearestPointIndex(interest_point);

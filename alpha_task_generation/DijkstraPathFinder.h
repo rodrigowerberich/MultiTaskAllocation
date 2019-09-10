@@ -14,7 +14,7 @@ private:
     dijkstra::Result m_result;
 public:
     PathFinder(PointMap point_map, EdgeStorage edge_storage, dijkstra::Result result);
-    Points getPath(const Point& interest_point);
+    Points getPath(const Point& interest_point) const;
 };
 
 }

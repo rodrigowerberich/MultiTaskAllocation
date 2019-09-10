@@ -70,6 +70,8 @@
         "iomanip": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "charconv": "cpp"
+        "charconv": "cpp",
+        "random": "cpp",
+        "unordered_set": "cpp"
     }
 }

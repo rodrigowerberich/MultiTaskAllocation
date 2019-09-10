@@ -18,19 +18,19 @@ T limit_max(T value, T max){
     return limit_max(value, max, max);
 }
 
-size_t PointMap::calculateIndexX(const Point& p){
+size_t PointMap::calculateIndexX(const Point& p) const{
     return std::floor((p.getX()-m_x_min)/(1.0000000001*m_x_max-m_x_min)*m_N);
 }
 
-size_t PointMap::calculateIndexY(const Point& p){
+size_t PointMap::calculateIndexY(const Point& p) const{
     return std::floor((p.getY()-m_y_min)/(1.0000000001*m_y_max-m_y_min)*m_M);
 }
 
-size_t PointMap::calculateIndex(const Point& p){
+size_t PointMap::calculateIndex(const Point& p) const{
     return calculateIndexX(p)+m_M*calculateIndexY(p);
 
 }
-bool PointMap::insideMap(const Point& p){
+bool PointMap::insideMap(const Point& p) const{
     return ( (m_x_min <= p.getX() && p.getX() <= m_x_max) && (m_y_min <= p.getY() && p.getY() <= m_y_max)  );
 }
 
@@ -100,7 +100,7 @@ void add_min_distance(int x, int y, Distances& distances, PointIndexes& point_in
         }
 }
 
-PointI PointMap::nearestPointSmall(const Point& interest_point){
+PointI PointMap::nearestPointSmall(const Point& interest_point) const{
     using util::lang::indices;
     double min_dist = std::numeric_limits<double>::max();
     int min_index = -1;
@@ -113,7 +113,7 @@ PointI PointMap::nearestPointSmall(const Point& interest_point){
     }
     return min_index;
 }
-PointI PointMap::nearestPointBig(const Point& p){
+PointI PointMap::nearestPointBig(const Point& p) const{
     using util::lang::range;
     if(!insideMap(p)) return -1;
     int origin_x = calculateIndexX(p);
@@ -182,7 +182,7 @@ PointI PointMap::nearestPointBig(const Point& p){
 }
 
 
-PointI PointMap::nearestPointIndex(const Point& p){
+PointI PointMap::nearestPointIndex(const Point& p) const{
     if(m_points.size() < 250){
         return nearestPointSmall(p);
     }else{
@@ -191,7 +191,7 @@ PointI PointMap::nearestPointIndex(const Point& p){
 }
 
 
-Point PointMap::nearestPoint(const Point& p){
+Point PointMap::nearestPoint(const Point& p) const{
     PointI index = nearestPointIndex(p);
     if(index == -1) return {std::numeric_limits<double>::max(), std::numeric_limits<double>::max()};
     else return m_points[index];
@@ -222,7 +222,7 @@ Points PointMap::pointsInRange(const Point& p, double radius){
     return points_in_range;
 }
 
-PointsI PointMap::pointsInRangeByIndex(const Point& p, double radius){
+PointsI PointMap::pointsInRangeByIndex(const Point& p, double radius) const{
     if(!insideMap(p)) return PointsI();
     PointsI points_in_range;
     int d_x = ((radius/(m_x_max-m_x_min))*m_N)+1;

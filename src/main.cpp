@@ -3,23 +3,26 @@
 
 #if ALTERNATIVE == 0
 
-#include <GnuPlotRenderer.h>
+#include <AlphaTasks.h>
+#include <AlphaTaskToJson.h>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
 
-    GnuPlotRenderer renderer;
-    renderer.setAxisRange(-20.0,20.0, -20.0, 20.0);
+    AlphaTask task{ "Banana", {{1,2}, {1,3}, {1,4}}};
 
-    renderer.holdOn();
-    renderer.draw(drawable::Rectangle{-1.0,-1.0,5.0,3.0});
-    renderer.drawRectangle({-10.0,-10.0,20.0,20.0});
-    renderer.draw(drawable::Circle{-1,-5,0.5});
-    renderer.drawCircle({1,1,2});
-    renderer.drawCircle({0,0,10});
-    renderer.drawPoint({-1,3});
-    renderer.draw(drawable::Point{1,-3});
-    renderer.drawNamedPoint({1,3, "R1"});
-    renderer.draw(drawable::NamedPoint{-1,-3, "R2"});
+    std::cout << task.getTask() << std::endl;
+
+    for(const auto& p: task){
+        std::cout << p << std::endl;
+    }
+    std::cout << jsonifier::toJson(task) << std::endl;
+
+    AlphaTask task2 {"Martelo", {{4,6}, {7,-3}}};
+
+    AlphaTasks tasks = {task, task2};
+
+    std::cout << jsonifier::toJson(tasks) << std::endl;
 
     return 0;
 }

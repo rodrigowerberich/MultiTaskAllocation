@@ -17,12 +17,12 @@ private:
     size_t m_N;
     size_t m_M;
     std::vector<std::vector<size_t>> m_points_mapping;
-    size_t calculateIndexX(const Point& p);
-    size_t calculateIndexY(const Point& p);
-    size_t calculateIndex(const Point& p);
-    bool insideMap(const Point& p);
-    PointI nearestPointSmall(const Point& p);
-    PointI nearestPointBig(const Point& p);
+    size_t calculateIndexX(const Point& p) const;
+    size_t calculateIndexY(const Point& p) const;
+    size_t calculateIndex(const Point& p) const;
+    bool insideMap(const Point& p) const;
+    PointI nearestPointSmall(const Point& p) const;
+    PointI nearestPointBig(const Point& p) const;
 public:
     PointMap(){}
     PointMap(double x_min, double x_max, double y_min, double y_max, size_t N, size_t M);
@@ -44,16 +44,16 @@ public:
         return true;
     }
     // double distanceToNearestPoint(const Point& p);
-    PointI nearestPointIndex(const Point& p);
-    Point nearestPoint(const Point& p);
+    PointI nearestPointIndex(const Point& p) const;
+    Point nearestPoint(const Point& p) const;
     Points pointsInRange(const Point& p, double radius);
-    PointsI pointsInRangeByIndex(const Point& p, double radius);
+    PointsI pointsInRangeByIndex(const Point& p, double radius) const;
     bool hasPointInRange(const Point& p, double radius);
     std::vector<Point>::iterator begin(){return m_points.begin();}
     std::vector<Point>::iterator end(){return m_points.end();}
     std::vector<Point>::const_iterator begin() const{return m_points.begin();}
     std::vector<Point>::const_iterator end() const{return m_points.end();}
-    size_t size(){return m_points.size();}
+    size_t size() const {return m_points.size();}
     const Point & operator[](size_t i) const{ return m_points[i]; }
     void show();
     double getXMin() const { return m_x_min; }
