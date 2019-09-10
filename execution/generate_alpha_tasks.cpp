@@ -326,7 +326,7 @@ void generate_and_visualize_alpha_tasks(std::tuple <std::string> values){
         // The alpha tasks are all the points leading up to the task position, since the reduced path contains the original task, we add all but the last point
         auto alpha_task = calculate_alpha_task(problemRepresentation, path_finder, task);
         alpha_tasks.push_back(alpha_task);
-        for(const int& i:util::lang::indices(alpha_task)){
+        for(int i:util::lang::indices(alpha_task)){
             if( i < (static_cast<int>(alpha_task.size())-1) ){
                 renderer.drawLine({alpha_task[i], alpha_task[i+1], drawable::Color::DeepPink});
             }
