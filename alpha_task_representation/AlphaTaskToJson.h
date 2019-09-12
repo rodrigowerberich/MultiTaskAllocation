@@ -12,6 +12,9 @@ std::string toJson(const T& jsonable);
 
 std::string prettify(const std::string& json);
 
+template <typename T>
+T fromJson(const std::string& json);
+
 }
 
 

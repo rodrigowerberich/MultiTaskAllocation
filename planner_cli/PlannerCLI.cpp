@@ -6,6 +6,7 @@
 #include <parse.h>
 #include <visualize.h>
 #include <generate_alpha_tasks.h>
+#include <visualize_alpha_tasks.h>
 
 constexpr const char* kNoErrorMessage = "";
 
@@ -22,6 +23,7 @@ PlannerCLI::PlannerCLI(int argc, char *argv[]):m_started_empty{false}{
     addCLIFunction<OneStringCLIFunction>("visualize", "Visualize the problem representation file in a 2d plot\nUsage: visualize filename", visualize);
     addCLIFunction<OneStringCLIFunction>("generate_alpha_tasks", "Calculate the alpha tasks of a given problem representation. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_alpha_tasks filename", generate_alpha_tasks);
     addCLIFunction<OneStringCLIFunction>("generate_and_visualize_alpha_tasks", "Calculate the alpha tasks of a given problem representation, this will also show a graphical representation of the tasks. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_and_visualize_alpha_tasks filename", generate_and_visualize_alpha_tasks);
+    addCLIFunction<OneStringCLIFunction>("visualize_alpha_tasks", "Visualize a problem and its alpha tasks. The input must be the problem representation file name. There must also exist an alpha.json file with the alpha tasks in the same folder.\nEx: test.json and test.alpha.json\nUsage: visualize_alpha_tasks filename", visualize_alpha_tasks);
 
     // After adding all comands, create help command
     addCLIFunction<HelpCLIFunction>("help", m_functions);

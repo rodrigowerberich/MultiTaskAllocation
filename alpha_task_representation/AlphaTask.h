@@ -41,6 +41,9 @@ public:
     const std::string & getTask() const{
         return m_task;
     }
+    bool isValid() const{
+        return !m_task.empty() && !m_tasks_positions.empty();
+    }
 };
 
 #endif //ALPHATASK_H__
