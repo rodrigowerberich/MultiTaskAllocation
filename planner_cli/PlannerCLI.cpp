@@ -2,13 +2,17 @@
 #include <iostream>
 #include <array>
 #include <OneStringCLIFunction.h>
+#include <TwoStringsCLIFunction.h>
 #include <HelpCLIFunction.h>
 #include <parse.h>
 #include <visualize.h>
 #include <generate_alpha_tasks.h>
 #include <visualize_alpha_tasks.h>
+#include <test_time_cost_calculation.h>
 
 constexpr const char* kNoErrorMessage = "";
+
+#define ADD_CLI_FUNCTION(FuncType_, FuncName_, Description_) addCLIFunction<FuncType_>(#FuncName_, Description_, FuncName_)
 
 PlannerCLI::PlannerCLI(int argc, char *argv[]):m_started_empty{false}{
     if(argc == 1){
@@ -19,11 +23,12 @@ PlannerCLI::PlannerCLI(int argc, char *argv[]):m_started_empty{false}{
         }
     }
     // These are the possible commands
-    addCLIFunction<OneStringCLIFunction>("parse", "Parse a file and prints out if it is correctly formated\nUsage: parse filename", parse);
-    addCLIFunction<OneStringCLIFunction>("visualize", "Visualize the problem representation file in a 2d plot\nUsage: visualize filename", visualize);
-    addCLIFunction<OneStringCLIFunction>("generate_alpha_tasks", "Calculate the alpha tasks of a given problem representation. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_alpha_tasks filename", generate_alpha_tasks);
-    addCLIFunction<OneStringCLIFunction>("generate_and_visualize_alpha_tasks", "Calculate the alpha tasks of a given problem representation, this will also show a graphical representation of the tasks. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_and_visualize_alpha_tasks filename", generate_and_visualize_alpha_tasks);
-    addCLIFunction<OneStringCLIFunction>("visualize_alpha_tasks", "Visualize a problem and its alpha tasks. The input must be the problem representation file name. There must also exist an alpha.json file with the alpha tasks in the same folder.\nEx: test.json and test.alpha.json\nUsage: visualize_alpha_tasks filename", visualize_alpha_tasks);
+    ADD_CLI_FUNCTION(OneStringCLIFunction, parse, "Parse a file and prints out if it is correctly formated\nUsage: parse filename");
+    ADD_CLI_FUNCTION(OneStringCLIFunction, visualize,  "Visualize the problem representation file in a 2d plot\nUsage: visualize filename");
+    ADD_CLI_FUNCTION(OneStringCLIFunction, generate_alpha_tasks,  "Calculate the alpha tasks of a given problem representation. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_alpha_tasks filename");
+    ADD_CLI_FUNCTION(OneStringCLIFunction, generate_and_visualize_alpha_tasks,  "Calculate the alpha tasks of a given problem representation, this will also show a graphical representation of the tasks. Writes output to a .alpha.json file.\nEx: filename=\"problem.json\", output=\"problem.alpha.json\"\nUsage: generate_and_visualize_alpha_tasks filename");
+    ADD_CLI_FUNCTION(OneStringCLIFunction, visualize_alpha_tasks,  "Visualize a problem and its alpha tasks. The input must be the problem representation file name. There must also exist an alpha.json file with the alpha tasks in the same folder.\nEx: test.json and test.alpha.json\nUsage: visualize_alpha_tasks filename");
+    ADD_CLI_FUNCTION(TwoStringCLIFunction, test_time_cost_calculation, "Test the time cost algorithm. (Must contain alpha task file)\n Usage: test_time_cost_calculation filename task_name");
 
     // After adding all comands, create help command
     addCLIFunction<HelpCLIFunction>("help", m_functions);
