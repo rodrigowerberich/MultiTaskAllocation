@@ -96,6 +96,51 @@ bool segmentsDoIntersect(const Point& p1, const Point& q1, const Point& p2, cons
     return false;
 }
 
+double distancePointAndVector(const Point& p, const Edge& edge){
+    // To analyze the distance from a point a segment
+    // we create to vector a and b with the same origin edge[0];
+    Point a = p - edge[0];
+    Point b = edge[1] - edge[0];
+    double b_absolute = b.absolute();
+    // a1 is the projection of a over the b vector
+    double a1 = Point::dotProduct(a,b)/(b_absolute*b_absolute);
+    // If a1 is between 0 and 1, the point in the line segment is not of
+    // of the extremities and we use the distance from a line formula
+    if ( 0 < a1 && a1 < 1 ){
+        // This calculates the height of p over the vector b,
+        // which is the distance
+        return std::abs(Point::crossProduct(a,b))/b_absolute;
+    }else{
+        double distance_0 = Point::euclideanDistance(p, edge[0]);
+        double distance_1 = Point::euclideanDistance(p, edge[1]);
+        return std::min(distance_0, distance_1);
+    }
+}
+
+std::tuple<Point, double> calculateClosestPointInSegment(const Point& p, const Edge& edge){
+    // To analyze the distance from a point a segment
+    // we create to vector a and b with the same origin edge[0];
+    Point a = p - edge[0];
+    Point b = edge[1] - edge[0];
+    double b_absolute = b.absolute();
+    // a1 is the projection of a over the b vector
+    double a1 = Point::dotProduct(a,b)/(b_absolute*b_absolute);
+    // If a1 is between 0 and 1, the point in the line segment is not of
+    // of the extremities and we use the distance from a line formula
+    if ( 0 < a1 && a1 < 1 ){
+        // This calculates the height of p over the vector b,
+        // which is the distance
+        double distance = std::abs(Point::crossProduct(a,b))/b_absolute;
+        Point closest_point = edge[0]+b*a1;
+        return std::make_tuple(closest_point, distance);
+    }else{
+        double distance_0 = Point::euclideanDistance(p, edge[0]);
+        double distance_1 = Point::euclideanDistance(p, edge[1]);
+        return ( distance_0 < distance_1 )?(std::make_tuple(edge[0], distance_0)):(std::make_tuple(edge[1], distance_1));
+    }
+}
+
+
 struct LineRepresentation{
     double m;
     double b;

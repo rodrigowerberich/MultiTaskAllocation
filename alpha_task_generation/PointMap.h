@@ -53,6 +53,8 @@ public:
     std::vector<Point>::iterator end(){return m_points.end();}
     std::vector<Point>::const_iterator begin() const{return m_points.begin();}
     std::vector<Point>::const_iterator end() const{return m_points.end();}
+    std::vector<Point>::reference back() { return m_points.back(); }
+    std::vector<Point>::const_reference back() const { return m_points.back(); }
     size_t size() const {return m_points.size();}
     const Point & operator[](size_t i) const{ return m_points[i]; }
     void show();

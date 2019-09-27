@@ -3,26 +3,53 @@
 
 #if ALTERNATIVE == 0
 
-#include <AlphaTasks.h>
-#include <AlphaTaskToJson.h>
-#include <iostream>
+#include <TrigHelper.h>
+#include <DistanceMap.h>
+#include <chrono>
+#include <random>
+
+Point generateNewCandidate(Point m_min_point, Point m_max_point){
+    static std::random_device rd;
+    static std::mt19937 e2(rd());
+    std::uniform_real_distribution<> dist_x(m_min_point.x, m_max_point.x);
+    std::uniform_real_distribution<> dist_y(m_min_point.y, m_max_point.y);
+    Point p = {dist_x(e2), dist_y(e2)}; 
+    return p;
+}
 
 int main(int argc, char *argv[]) {
 
-    AlphaTask task{ "Banana", {{1,2}, {1,3}, {1,4}}};
+    using namespace std::chrono;
 
-    std::cout << task.getTask() << std::endl;
+    DistanceMap distanceMap { -10, 10, -10, 10, 10, 10};
 
-    for(const auto& p: task){
-        std::cout << p << std::endl;
+    int num_of_points = 1000;
+
+    for(int i = 0; i < num_of_points; i++){
+        distanceMap.insert(generateNewCandidate({-10,-10},{10,10}));
     }
-    std::cout << jsonifier::toJson(task) << std::endl;
+    for(int i=0; i < num_of_points; i++){
+        for(int j=i+1; j < num_of_points; j++){
+            distanceMap.insertEdge({i,j});
+        }
+    }
 
-    AlphaTask task2 {"Martelo", {{4,6}, {7,-3}}};
+    // distanceMap.show();
 
-    AlphaTasks tasks = {task, task2};
+    EdgeI ei1;
+    constexpr int num_of_executions = 10;
+    auto start = high_resolution_clock::now(); 
+    for(int i =0; i < num_of_executions; i++){
+        ei1 = distanceMap.nearestEdgeIndex({3,-1});
+    }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start); 
+    std::cout << "Took " << duration.count()/num_of_executions << " microseconds " << std::endl;
+    std::cout << distanceMap[ei1[0]] << distanceMap[ei1[1]] << std::endl;
 
-    std::cout << jsonifier::toJson(tasks) << std::endl;
+    // EdgeI ei2 = distanceMap.nearestEdgeIndex({3,3});
+    // std::cout << distanceMap[ei2[0]] << distanceMap[ei2[1]] << std::endl;
+
 
     return 0;
 }
