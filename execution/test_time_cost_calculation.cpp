@@ -258,7 +258,8 @@ private:
     bool hasConnectionToRouter(const Point& p) const{
         return m_problem_representation.getConnectivityFunction()->containsPoint(p);
     }
-    bool checkPathCollisionAndMapConnection(const RobotsPosition& rp1, 
+    bool checkPathCollisionAndMapConnection(
+        const RobotsPosition& rp1, 
         const RobotsPosition& rp2,
         std::vector<Points>& robots_path_points,
         std::vector<std::vector<bool>>& robots_path_connection,
@@ -287,39 +288,15 @@ private:
             is_any_robot_fully_connected = is_any_robot_fully_connected || robots_fully_connected[robot_i];
             are_all_robots_fully_connected = are_all_robots_fully_connected && robots_fully_connected[robot_i];
         }
+        return false;
     }
-public:
-    CollisionEdge(const ProblemRepresentation& problem_representation, double check_size):
-        m_problem_representation{problem_representation},
-        m_check_size{check_size}{}
-    bool operator()(const RobotsPosition& rp1, const RobotsPosition& rp2) const{
-        std::vector<Points> robots_path_points(rp1.size());
-        std::vector<std::vector<bool>> robots_path_connection(rp1.size());
-        std::vector<bool> robots_fully_connected(rp1.size());
-        RobotPositionCollisionCheckVertices collision_check_vertices;
-        EdgeStorage visible_edges;
-        EdgeStorage not_visible_edges;
-        bool is_any_robot_fully_connected = false;
-        bool are_all_robots_fully_connected = true;
-        bool collides = checkPathCollisionAndMapConnection(rp1,rp2, robots_path_points, robots_path_connection, robots_fully_connected, collision_check_vertices, is_any_robot_fully_connected, are_all_robots_fully_connected);
-        if( collides ){
-            std::cout << "Robot path collides\n";
-            return true;            
-        }
-        if(!is_any_robot_fully_connected){
-            std::cout << "No robot is fully inside connection area\n";
-            return true;
-        }
-        if(are_all_robots_fully_connected){
-            std::cout << "All robots inside connection area\n";
-            return false;
-        }
-        for(const auto& vertice: collision_check_vertices){
-            int robot_i = std::get<0>(vertice);
-            int position_i = std::get<1>(vertice);
-        }
-
-        // Check if last position is valid
+    bool checkIfLastPositionIsInvalid(
+        std::vector<Points>& robots_path_points,
+        std::vector<std::vector<bool>>& robots_path_connection,
+        RobotPositionCollisionCheckVertices& collision_check_vertices,
+        EdgeStorage& visible_edges,
+        EdgeStorage& not_visible_edges
+    ) const{
         std::vector<int> connected;
         std::set<int> uncertain;
         for(int robot_i=0; robot_i < robots_path_points.size(); robot_i++){
@@ -356,7 +333,7 @@ public:
                 }
             }
         }
-        if(connected.size() != rp1.size()){
+        if(connected.size() != robots_path_points.size()){
             for(int connected_i = 0; connected_i < connected.size(); connected_i++){
                 int connected_robot_i = connected[connected_i];
                 std::cout << "Sending connection from " << connected_robot_i << std::endl;
@@ -378,7 +355,40 @@ public:
                 return true;
             }
         }
+        return false;
+    }
+public:
+    CollisionEdge(const ProblemRepresentation& problem_representation, double check_size):
+        m_problem_representation{problem_representation},
+        m_check_size{check_size}{}
+    bool operator()(const RobotsPosition& rp1, const RobotsPosition& rp2) const{
+        std::vector<Points> robots_path_points(rp1.size());
+        std::vector<std::vector<bool>> robots_path_connection(rp1.size());
+        std::vector<bool> robots_fully_connected(rp1.size());
+        RobotPositionCollisionCheckVertices collision_check_vertices;
+        bool is_any_robot_fully_connected = false;
+        bool are_all_robots_fully_connected = true;
+        bool collides = checkPathCollisionAndMapConnection(rp1,rp2, robots_path_points, robots_path_connection, robots_fully_connected, collision_check_vertices, is_any_robot_fully_connected, are_all_robots_fully_connected);
+        if( collides ){
+            std::cout << "Robot path collides\n";
+            return true;            
+        }
+        if(!is_any_robot_fully_connected){
+            std::cout << "No robot is fully inside connection area\n";
+            return true;
+        }
+        if(are_all_robots_fully_connected){
+            std::cout << "All robots inside connection area\n";
+            return false;
+        }
 
+        // Check if last position is valid
+        EdgeStorage visible_edges;
+        EdgeStorage not_visible_edges;
+        bool lastPositionInvalid = checkIfLastPositionIsInvalid(robots_path_points, robots_path_connection, collision_check_vertices, visible_edges, not_visible_edges);
+        if(lastPositionInvalid){
+            return true;
+        }
         // for(int robot_i = 0; robot_i < rp1.size(); robot_i++){
         //     std::cout << "Robot " << robot_i << " is " << (robots_fully_connected[robot_i]?"connected":"not connected") << std::endl;
         //     if( robots_fully_connected[robot_i] == false ){
@@ -544,6 +554,8 @@ void test_time_cost_calculation(std::tuple <std::string, std::string> values){
     auto point4 = RobotsPosition{3, {{2.4,-1.5}, {-3,-1}, {5,-3}}}; 
     auto origin5 = RobotsPosition{3, {{-1.7,0.3}, {0.5, -0.3}, {-1,-1.3}}};
     auto point5 = RobotsPosition{3, {{-1.5,0.3}, {6, -0.3}, {6,-1.3}}}; 
+    auto origin6 = RobotsPosition{3, {{-6,0.5}, {-4.7, 2.6}, {-6,3}}};
+    auto point6 = RobotsPosition{3, {{-5.5,0.5}, {-4.7, 4}, {-5.5,3}}}; 
 
     // auto point = RobotsPosition{3, {{-1.76219,-0.647357}, {2,-0.5}, {-1.59339,0.886397}}}; //generator(1);
 
@@ -560,6 +572,9 @@ void test_time_cost_calculation(std::tuple <std::string, std::string> values){
     test_edge(origin4, point4, collision_checker, drawable::Color::Brown, renderer);
     std::cout << "Test 5 - Should fail, robot 2 can not perform it path without losing connection\n";
     test_edge(origin5, point5, collision_checker, drawable::Color::Cyan, renderer);
+    std::cout << "Test 6 - Should fail, robots 1 and 2 with end points outside connection area and no visibility\n";
+    test_edge(origin6, point6, collision_checker, drawable::Color::DarkBlue, renderer);
+
     // std::cout << point << std::endl;
     // drawConfiguration(origin, drawable::Color::Blue, renderer);
     // drawConfiguration(point, drawable::Color::Blue, renderer);
