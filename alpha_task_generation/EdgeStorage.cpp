@@ -63,7 +63,7 @@ std::string EdgeStorage::toString(){
     return aux;
 }
 
-EdgesI EdgeStorage::toEdges(){
+EdgesI EdgeStorage::toEdges() const{
     EdgesI aux;
     for(const auto& connect_points: m_storage){
         for(const auto& second_point: connect_points.second){

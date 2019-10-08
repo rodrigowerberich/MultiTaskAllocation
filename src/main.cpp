@@ -4,52 +4,336 @@
 #if ALTERNATIVE == 0
 
 #include <TrigHelper.h>
-#include <DistanceMap.h>
+#include <RRTTemplate.h>
+#include <RRTStarTemplate.h>
 #include <chrono>
 #include <random>
+#include <GnuPlotRenderer.h>
+#include <cmath>
+#include <vector>
+#include <RobotsPosition.h>
+#include <RandomRobotsPositionGenerator.h>
+#include <NamedPoint.h>
+#include <deque>
+#include <RRTSolverTemplate.h>
 
-Point generateNewCandidate(Point m_min_point, Point m_max_point){
-    static std::random_device rd;
-    static std::mt19937 e2(rd());
-    std::uniform_real_distribution<> dist_x(m_min_point.x, m_max_point.x);
-    std::uniform_real_distribution<> dist_y(m_min_point.y, m_max_point.y);
-    Point p = {dist_x(e2), dist_y(e2)}; 
+static int nearestPointRp(const std::vector<RobotsPosition>& points, const RobotsPosition& point){
+    double min_distance = std::numeric_limits<double>::max();
+    int min_point_index = -1;
+    for(auto point_index=0; point_index < points.size(); point_index++){
+        double distance = RobotsPosition::distance(point, points[point_index]);
+        if(distance < min_distance){
+            min_distance = distance;
+            min_point_index = point_index;
+        }
+    }
+    return min_point_index;
+}
+
+static RobotsPosition stepRp(const RobotsPosition& original, const RobotsPosition& source, int step_size){
+    RobotsPosition new_robots_position(original.size());
+    for(int robot_i = 0; robot_i < original.size(); robot_i++){
+        Point growth_vector = original[robot_i] - source[robot_i];
+        if( step_size < growth_vector.absolute() ){
+            growth_vector = growth_vector*(((double)step_size)/growth_vector.absolute());   
+            new_robots_position[robot_i] = source[robot_i]+growth_vector;
+        }else{
+            new_robots_position[robot_i] = original[robot_i];
+        }
+    }
+    return new_robots_position;
+}
+
+static bool collision_pointRp(const Point& p){
+    return false;
+    // return (std::pow(p.x-300 ,2) + std::pow(p.y-300 ,2)) < 40000;
+}
+
+static bool collision_edgeRp(const RobotsPosition& rp1, const RobotsPosition& rp2){
+    for(int robot_i = 0; robot_i < rp1.size(); robot_i++){
+        Point p1 = rp1[robot_i];
+        Point p2 = rp2[robot_i];
+        Point new_edge_vector = p2 - p1;
+        constexpr int NUM_OF_POINTS = 100;
+        for(int i = 0; i < NUM_OF_POINTS; i++){
+            Point part_of_edge = new_edge_vector*(static_cast<double>(i+1)/static_cast<double>(NUM_OF_POINTS));
+            Point new_position = p1 + part_of_edge;
+            if( collision_pointRp(new_position) ){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static double randNumber(double interval_limits){
+    return ((((double)rand())/RAND_MAX)-0.5)*2*interval_limits;
+}
+
+Point generateNewCandidate(size_t){
+    // static std::random_device rd;
+    // static std::mt19937 e2(rd());
+    // std::uniform_real_distribution<> dist_x(-800, 800);
+    // std::uniform_real_distribution<> dist_y(-800, 800);
+    // Point p = {dist_x(e2), dist_y(e2)}; 
+    Point p = {randNumber(800), randNumber(800)}; 
     return p;
 }
 
-int main(int argc, char *argv[]) {
 
+PointI nearestPoint(const std::vector<Point>& points, const Point& point){
+    double min_distance = std::numeric_limits<double>::max();
+    int min_point_index = -1;
+    for(auto point_index=0; point_index < points.size(); point_index++){
+        double distance = Point::euclideanDistance(point, points[point_index]);
+        if(distance < min_distance){
+            min_distance = distance;
+            min_point_index = point_index;
+        }
+    }
+    return min_point_index;
+}
+
+Point step(const Point& original, const Point& source, int step_size){
+    Point growth_vector = original - source;
+    if( step_size < growth_vector.absolute() ){
+        growth_vector = growth_vector*(((double)step_size)/growth_vector.absolute());
+
+        return source+growth_vector;   
+    }
+    return original;
+}
+
+bool collision_point(const Point& p){
+    return (std::pow(p.x-300 ,2) + std::pow(p.y-300 ,2)) < 40000;
+}
+
+bool collision_edge(const Point& p1, const Point& p2){
+    Point new_edge_vector = p2 - p1;
+    constexpr int NUM_OF_POINTS = 500;
+    for(int i = 0; i < NUM_OF_POINTS; i++){
+        Point part_of_edge = new_edge_vector*(static_cast<double>(i+1)/static_cast<double>(NUM_OF_POINTS));
+        Point new_position = p1 + part_of_edge;
+        if( collision_point(new_position) ){
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<int> near(const std::vector<Point>& points, const Point& candidate_point){
+    double n = points.size();
+    double gamma = 3200;
+    double k = gamma*std::sqrt(std::log(n)/n);
+    std::vector<int> points_near_index;
+    for(auto point_index = 0; point_index < n; point_index++ ){
+        const auto& point = points[point_index];
+        if( Point::euclideanDistance(point, candidate_point) < k ){
+            points_near_index.push_back(point_index);
+        }
+    }
+    return points_near_index;
+}
+
+int choose_parent(const std::vector<int>& points_near_index, int nearest_point_index, const Point& candidate_point, const std::vector<Point>& points, std::vector<double>& costs){
+    double min_cost = std::numeric_limits<double>::max();
+    int min_point_index = -1;
+    for(int point_near_index: points_near_index){
+        double cost = costs[point_near_index] + Point::euclideanDistance(points[point_near_index], candidate_point);
+        if( (cost < min_cost) && !collision_edge(points[point_near_index], candidate_point) ){
+            min_cost = cost;
+            min_point_index = point_near_index;
+        }
+    }
+    double nearest_point_cost = costs[nearest_point_index] + Point::euclideanDistance(points[nearest_point_index], candidate_point);
+    if( nearest_point_cost < min_cost ){
+        min_cost = nearest_point_cost;
+        min_point_index = nearest_point_index;
+    }
+    costs.push_back(min_cost);
+    return min_point_index;
+}
+
+void rewire(std::vector<Point>& vertices, std::vector<std::array<int,2>>& edges, std::vector<double> costs, const std::vector<int>& points_near_index, int parent_index, const Point& candidate_point){
+    int new_point_index = vertices.size()-1;
+    for(int point_near_index: points_near_index){
+        double cost = costs[new_point_index] + Point::euclideanDistance(vertices[point_near_index], candidate_point);
+        if( (cost < costs[point_near_index]) && !collision_edge(vertices[point_near_index], candidate_point) ){
+            costs[point_near_index] = cost;
+            for(auto& edge: edges){
+                if( edge[1] == point_near_index ){
+                    edge[0] = new_point_index;
+                }
+            }
+        }
+    }
+}
+
+using RRT = RRTTemplate<Point, Point(size_t), PointI(const std::vector<Point>& points, const Point& point), Point(const Point& original, const Point& source, int step_size), int , bool(const Point& p1, const Point& p2)>;
+using RRTMutiple = RRTTemplate<RobotsPosition, RandomRobotsPositionGenerator, int(const std::vector<RobotsPosition>&, const RobotsPosition&), RobotsPosition(const RobotsPosition&, const RobotsPosition& source, int), int , bool(const RobotsPosition&, const RobotsPosition&)>;
+using RRTStar = RRTStarTemplate<Point, Point(size_t), PointI(const std::vector<Point>&, const Point&), Point(const Point&, const Point&, int), int , bool(const Point&, const Point&), std::vector<int>(const std::vector<Point>&, const Point&), int(const std::vector<int>&, int, const Point&, const std::vector<Point>&, std::vector<double>&), void(std::vector<Point>&, std::vector<std::array<int,2>>&, std::vector<double>, const std::vector<int>&, int, const Point&)>;
+
+static void drawConfiguration(const RobotsPosition& rp, const drawable::Color color, const GnuPlotRenderer& renderer){
+    Points p1s;
+    Points p2s;
+    for(size_t i=0; i < rp.size(); i++){
+        renderer.drawNamedPoint(drawable::NamedPoint(rp[i], std::to_string(i), color));
+        if( i < (rp.size()-1)){
+            p1s.push_back(rp[i]);
+            p2s.push_back(rp[i+1]);
+        }
+    }
+    renderer.drawLines({ p1s, p2s, color });
+}
+
+static void drawConfigurationEdge(const RobotsPosition& rp1, const RobotsPosition& rp2 , const drawable::Color color, const GnuPlotRenderer& renderer){
+    Points p1s;
+    Points p2s;
+    for(size_t i=0; i < rp1.size(); i++){
+        renderer.drawLine(drawable::Line(rp1[i], rp2[i], color));
+    }
+}
+
+// template <typename RRTClass, typename ConfigurationPoint, typename DistanceFunction>
+// std::deque<ConfigurationPoint> find(RRTClass& rrt, const ConfigurationPoint& goal, const DistanceFunction& distance_function, double threshhold){
+//     while(true){
+//         auto i = rrt.grow();
+//         if(i != -1){
+//             auto last_point = rrt.getVertices()[i];
+//             // std::cout << "LP: " << last_point << std::endl;
+//             // std::cout << distance_function(goal, last_point) << std::endl;
+//             if( distance_function(goal, last_point) < threshhold ){
+//                 return rrt.getPathToRoot(i);
+//             }
+//         }
+//     }
+// }
+
+
+
+int main(int argc, char *argv[]) {
+    srand(time(0));
     using namespace std::chrono;
 
-    DistanceMap distanceMap { -10, 10, -10, 10, 10, 10};
+    auto origin = RobotsPosition(3, {{100,-100},{200,-100}, {300, -100}});
+    auto goal = RobotsPosition(3, {{550,700},{650,700}, {750, 700}});
 
-    int num_of_points = 1000;
 
-    for(int i = 0; i < num_of_points; i++){
-        distanceMap.insert(generateNewCandidate({-10,-10},{10,10}));
-    }
-    for(int i=0; i < num_of_points; i++){
-        for(int j=i+1; j < num_of_points; j++){
-            distanceMap.insertEdge({i,j});
+    // RRTMutiple rrt( origin, goal, RandomRobotsPositionGenerator(3, 800), nearestPointRp, stepRp, 100, collision_edgeRp, 0.35);
+    // RRTMutiple rrt2( goal, origin, RandomRobotsPositionGenerator(3, 800), nearestPointRp, stepRp, 100, collision_edgeRp, 0.35);
+
+    // RRTStar rrt_star{Point{0,0}, generateNewCandidate, nearestPoint, step, 100, collision_edge, near, choose_parent, rewire};
+
+    constexpr int num_of_attempts = 1;
+    auto start = high_resolution_clock::now(); 
+    auto generator = RandomRobotsPositionGenerator(3, -800, 800, -800, 800);
+    // for(int i=0; i < num_of_attempts; i++){
+        // RRT rrt{Point{0,0}, Point{750, 750}, generateNewCandidate, nearestPoint, step, 100, collision_edge, 0.5};
+        // RRT rrt2{Point{750,750}, Point{0, 0}, generateNewCandidate, nearestPoint, step, 100, collision_edge, 0.5};
+        // auto found = find(rrt, Point{750,750}, Point::euclideanDistance, 1);
+        // auto found = findBi(rrt, rrt2, Point{750,750}, Point::euclideanDistance, 1);
+
+        RRTMutiple rrt( origin, goal, generator, nearestPointRp, stepRp, 100, collision_edgeRp, 0.5);
+        RRTMutiple rrt2( goal, origin, generator, nearestPointRp, stepRp, 100, collision_edgeRp, 0.35);
+        // auto found = find(rrt, goal, RobotsPosition::distance, 1);
+        auto found = rrt_solver::findBi(rrt, rrt2, goal, RobotsPosition::distance, 1);
+    // }
+    auto stop = high_resolution_clock::now(); 
+    auto duration = duration_cast<microseconds>(stop - start); 
+
+    GnuPlotRenderer renderer;
+    renderer.setAxisRange(-800,800, -800, 800);
+
+
+    renderer.holdOn();
+
+    // for(int i=0; i < found.size(); i++){
+    //     std::cout << found[i] << ", ";
+    //     renderer.drawPoint(found[i]);
+    //     if( i < (found.size()-1) ){
+    //         renderer.drawLine({found[i], found[i+1]});
+    //     }
+    // }
+
+    for(int i=0; i < found.size(); i++){
+        std::cout << found[i] << ", ";
+        // drawConfiguration(rrt.getVertices()[found[i]], drawable::Color::Blue, renderer);
+        if( i < (found.size()-1) ){
+            drawConfigurationEdge(found[i], found[i+1], drawable::Color::Red, renderer);
         }
     }
 
-    // distanceMap.show();
+    std::cout << std::endl;
+    std::cout << "Took " << duration.count()/num_of_attempts << " microseconds\n";
 
-    EdgeI ei1;
-    constexpr int num_of_executions = 10;
-    auto start = high_resolution_clock::now(); 
-    for(int i =0; i < num_of_executions; i++){
-        ei1 = distanceMap.nearestEdgeIndex({3,-1});
-    }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start); 
-    std::cout << "Took " << duration.count()/num_of_executions << " microseconds " << std::endl;
-    std::cout << distanceMap[ei1[0]] << distanceMap[ei1[1]] << std::endl;
 
-    // EdgeI ei2 = distanceMap.nearestEdgeIndex({3,3});
-    // std::cout << distanceMap[ei2[0]] << distanceMap[ei2[1]] << std::endl;
+    renderer.drawCircle({300,300,200});
 
+
+
+    
+
+    // auto start_star = high_resolution_clock::now(); 
+    // for(int i=0; i < 1000; i++){
+    //     rrt_star.grow();
+    // }
+    // auto stop_star = high_resolution_clock::now(); 
+    // auto duration_star = duration_cast<microseconds>(stop_star - start_star); 
+
+    // const auto & points = rrt.getVertices();
+    // const auto & edges_i = rrt.getEdges();
+
+    // const auto & points_star = rrt_star.getVertices();
+    // const auto & edges_star_i = rrt_star.getEdges();
+
+
+    // Points p1s;
+    // Points p2s;
+
+    // Points p1_stars;
+    // Points p2_stars;
+
+    // for(const auto& e: edges_i){
+    //     // std::cout << e << std::endl;
+    //     p1s.push_back(points[e[0]]);
+    //     p2s.push_back(points[e[1]]);
+    // }
+
+    // for(const auto& e: edges_star_i){
+    //     p1_stars.push_back(points_star[e[0]]);
+    //     p2_stars.push_back(points_star[e[1]]);
+    // }
+
+    // std::cout << duration.count() << std::endl;
+    // std::cout << duration_star.count() << std::endl;
+    // GnuPlotRenderer renderer;
+    // renderer.setAxisRange(-800,800, -800, 800);
+
+    // renderer.holdOn();
+
+    // for(int i=0; i < rrt.getVertices().size(); i++){
+    //     drawConfiguration(rrt.getVertices()[i], drawable::Color::Blue, renderer);
+    // }
+    // for(int i=0; i < rrt.getEdges().size(); i++){
+    //     drawConfigurationEdge(rrt.getVertices()[rrt.getEdges()[i][0]], rrt.getVertices()[rrt.getEdges()[i][1]], drawable::Color::Red, renderer);
+    // }
+
+    // // renderer.drawPoints(points);
+    // // renderer.drawLines({p1s,p2s});
+
+    // renderer.drawPoints(points_star);
+    // renderer.drawLines({p1_stars,p2_stars});
+
+    // renderer.drawCircle({300,300,200});
+
+    // auto generator = GenerateRandomRobotPosition(3);
+
+    // std::cout << generator(1).position << std::endl;
+    // std::cout << generator(1).position << std::endl;
+    // std::cout << generator(1).position << std::endl;
+
+    // renderer.drawPoints(generator(1).position);
+    
 
     return 0;
 }

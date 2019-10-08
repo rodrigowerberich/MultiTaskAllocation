@@ -18,7 +18,7 @@ public:
     void removeEdge(const EdgeI& edge);
     EdgesI getEdgesWith(const PointI& p) const;
     std::string toString();
-    EdgesI toEdges();
+    EdgesI toEdges() const;
 };
 
 #endif //EDGESTORAGE_H__
