@@ -328,7 +328,7 @@ private:
                 auto this_robot_connection_edges = visible_edges.getEdgesWith(robot_position_vertex);
                 if(this_robot_connection_edges.empty()){
                     // Lonely unconnected node configures unconnected node
-                    std::cout << "Lonely node\n";
+                    // std::cout << "Lonely node\n";
                     return true;
                 }
             }
@@ -351,7 +351,7 @@ private:
                 }
             }
             if(!uncertain.empty()){
-                std::cout << "Last position is invalid\n";
+                // std::cout << "Last position is invalid\n";
                 return true;
             }
         }
@@ -369,17 +369,17 @@ public:
         bool is_any_robot_fully_connected = false;
         bool are_all_robots_fully_connected = true;
         bool collides = checkPathCollisionAndMapConnection(rp1,rp2, robots_path_points, robots_path_connection, robots_fully_connected, collision_check_vertices, is_any_robot_fully_connected, are_all_robots_fully_connected);
-        std::cout << "Collides? " << collides << std::endl;
+        // std::cout << "Collides? " << collides << std::endl;
         if( collides ){
-            std::cout << "Robot path collides\n";
+            // std::cout << "Robot path collides\n";
             return true;            
         }
         if(!is_any_robot_fully_connected){
-            std::cout << "No robot is fully inside connection area\n";
+            // std::cout << "No robot is fully inside connection area\n";
             return true;
         }
         if(are_all_robots_fully_connected){
-            std::cout << "All robots inside connection area\n";
+            // std::cout << "All robots inside connection area\n";
             return false;
         }
 
@@ -421,7 +421,7 @@ public:
                     auto this_robot_position_connection_edges = visible_edges.getEdgesWith(robot_connection_vertex);
                     if(this_robot_position_connection_edges.empty()){
                         // Lonely unconnected node configures unconnected node
-                        std::cout << "Lonely node\n";
+                        // std::cout << "Lonely node\n";
                         return true;
                     }
                 }
@@ -448,7 +448,7 @@ public:
                 }
             }
             if(!robot_uncertain_points.empty()){
-                std::cout << "Not all points are connected!\n";
+                // std::cout << "Not all points are connected!\n";
                 return true;
             }
         }
@@ -500,15 +500,27 @@ static void drawConfigurationEdge(const RobotsPosition& rp1, const RobotsPositio
     }
 }
 
+static void drawConfigurationEdgeMulticolor(const RobotsPosition& rp1, const RobotsPosition& rp2 , const std::vector<drawable::Color> colors, const GnuPlotRenderer& renderer){
+    Points p1s;
+    Points p2s;
+    for(size_t i=0; i < rp1.size(); i++){
+        renderer.drawLine(drawable::Line(rp1[i], rp2[i], colors[i]));
+    }
+}
+
+
+
 using RRTMutiple = RRTTemplate<RobotsPosition, RandomRobotsPositionGenerator, int(const std::vector<RobotsPosition>&, const RobotsPosition&), RobotsPosition(const RobotsPosition&, const RobotsPosition& source, double), double , CollisionEdge>;
 
 bool test_edge(const RobotsPosition& rp1, const RobotsPosition& rp2, const CollisionEdge& collision_function, const drawable::Color& color, GnuPlotRenderer& renderer){
     std::cout << rp1 << std::endl;
     std::cout << rp2 << std::endl;
-    drawConfiguration(rp2, color, renderer);
-    drawConfiguration(rp1, color, renderer);
-    drawConfigurationEdge(rp1, rp2, drawable::Color::Red, renderer);
     bool collides = collision_function(rp2, rp1); 
+    if(!collides){
+        drawConfiguration(rp2, color, renderer);
+        drawConfiguration(rp1, color, renderer);
+        drawConfigurationEdge(rp1, rp2, drawable::Color::Red, renderer);
+    }
     std::cout << (collides?"Invalid":"Valid") << std::endl;
     return collides;
 }
@@ -572,61 +584,70 @@ void test_time_cost_calculation(std::tuple <std::string, std::string> values){
         i++;
     }
     auto goal = RobotsPosition(problemRepresentation.getRobots()->size(), complete_task_points);
-    // std::cout << origin << std::endl;
-    // std::cout << goal << std::endl;
-    // auto generator = RandomRobotsPositionGenerator(3, bounding_box.lower_left_x, bounding_box.top_right_x, bounding_box.lower_left_y, bounding_box.top_right_y);
-    // auto collision_checker = CollisionEdge(problemRepresentation, 0.05);
-    // RRTMutiple rrt( origin, goal, generator, nearestPointRp, stepRp, 0.5, collision_checker, 0.5);
-    // RRTMutiple rrt2( goal, origin, generator, nearestPointRp, stepRp, 0.5, collision_checker, 0.35);
-    // auto start = high_resolution_clock::now(); 
-    // auto found = rrt_solver::findBi(rrt, rrt2, goal, RobotsPosition::distance, 0.1);
-    // auto stop = high_resolution_clock::now(); 
-    // auto duration = duration_cast<microseconds>(stop - start); 
-    // std::cout << "Took " << duration.count() << " microseconds\n";
-
-    // for(int i=0; i < found.size(); i++){
-    //     std::cout << found[i] << ", ";
-    //     // drawConfiguration(rrt.getVertices()[found[i]], drawable::Color::Blue, renderer);
-    //     if( i < (found.size()-1) ){
-    //         drawConfigurationEdge(found[i], found[i+1], drawable::Color::Red, renderer);
-    //     }
-    // }
-
+    std::cout << origin << std::endl;
+    std::cout << goal << std::endl;
     auto generator = RandomRobotsPositionGenerator(3, bounding_box.lower_left_x, bounding_box.top_right_x, bounding_box.lower_left_y, bounding_box.top_right_y);
     auto collision_checker = CollisionEdge(problemRepresentation, 0.05);
+    RRTMutiple rrt( origin, goal, generator, nearestPointRp, stepRp, 0.5, collision_checker, 0.5);
+    RRTMutiple rrt2( goal, origin, generator, nearestPointRp, stepRp, 0.5, collision_checker, 0.35);
+    auto start = high_resolution_clock::now(); 
+    auto found = rrt_solver::findBi(rrt, rrt2, goal, RobotsPosition::distance, 0.1);
+    auto stop = high_resolution_clock::now(); 
+    auto duration = duration_cast<microseconds>(stop - start); 
+    std::cout << "Took " << duration.count() << " microseconds\n";
 
-    auto origin0 = RobotsPosition{3, {{-3,-4}, {-3,1}, {3,1}}}; 
-    auto point0 = RobotsPosition{3, {{-3,-3.5}, {-3,2.5}, {2.5,1}}};
-    auto origin1 = RobotsPosition{3, {{0.5,2.7}, {0.5,2.3}, {0.5,1.9}}};
-    auto point1 = RobotsPosition{3, {{1,2.7}, {1,2.3}, {1,1.9}}};
-    auto origin2 = RobotsPosition{3, {{-6,2.3}, {-5.5,0}, {-6,-2}}};
-    auto point2 = RobotsPosition{3, {{-4,2.3}, {-5.8,0}, {-6,-4}}};
-    auto origin3 = RobotsPosition{3, {{-2,-4}, {-1.8,-4}, {4,-4}}};
-    auto point3 = RobotsPosition{3, {{-2,-3.5}, {-1.8,-3.5}, {4,-3.5}}};
-    auto origin4 = RobotsPosition{3, {{0.5,-1.5}, {-3,-1.5}, {5,-2}}};
-    auto point4 = RobotsPosition{3, {{2.4,-1.5}, {-3,-1}, {5,-3}}}; 
-    auto origin5 = RobotsPosition{3, {{-1.7,0.3}, {0.5, -0.3}, {-1,-1.3}}};
-    auto point5 = RobotsPosition{3, {{-1.5,0.3}, {6, -0.3}, {6,-1.3}}}; 
-    auto origin6 = RobotsPosition{3, {{-6,0.5}, {-4.7, 2.6}, {-6,3}}};
-    auto point6 = RobotsPosition{3, {{-5.5,0.5}, {-4.7, 4}, {-5.5,3}}}; 
+    for(int i=0; i < found.size(); i++){
+        std::cout << found[i] << ", ";
+        // drawConfiguration(rrt.getVertices()[found[i]], drawable::Color::Blue, renderer);
+        if( i < (found.size()-1) ){
+            // drawConfigurationEdge(found[i], found[i+1], drawable::Color::Red, renderer);
+            drawConfigurationEdgeMulticolor(found[i], found[i+1], {drawable::Color::Red, drawable::Color::Green, drawable::Color::Blue}, renderer);
+        }
+    }
+
+    // auto generator = RandomRobotsPositionGenerator(3, bounding_box.lower_left_x, bounding_box.top_right_x, bounding_box.lower_left_y, bounding_box.top_right_y);
+    // auto collision_checker = CollisionEdge(problemRepresentation, 0.05);
+
+    // auto origin0 = RobotsPosition{3, {{-3,-4}, {-3,1}, {3,1}}}; 
+    // auto point0 = RobotsPosition{3, {{-3,-3.5}, {-3,2.5}, {2.5,1}}};
+    // auto origin1 = RobotsPosition{3, {{0.5,2.7}, {0.5,2.3}, {0.5,1.9}}};
+    // auto point1 = RobotsPosition{3, {{1,2.7}, {1,2.3}, {1,1.9}}};
+    // auto origin2 = RobotsPosition{3, {{-6,2.3}, {-5.5,0}, {-6,-2}}};
+    // auto point2 = RobotsPosition{3, {{-4,2.3}, {-5.8,0}, {-6,-4}}};
+    // auto origin3 = RobotsPosition{3, {{-2,-4}, {-1.8,-4}, {4,-4}}};
+    // auto point3 = RobotsPosition{3, {{-2,-3.5}, {-1.8,-3.5}, {4,-3.5}}};
+    // auto origin4 = RobotsPosition{3, {{0.5,-1.5}, {-3,-1.5}, {5,-2}}};
+    // auto point4 = RobotsPosition{3, {{2.4,-1.5}, {-3,-1}, {5,-3}}}; 
+    // auto origin5 = RobotsPosition{3, {{-1.7,0.3}, {0.5, -0.3}, {-1,-1.3}}};
+    // auto point5 = RobotsPosition{3, {{-1.5,0.3}, {6, -0.3}, {6,-1.3}}}; 
+    // auto origin6 = RobotsPosition{3, {{-6,0.5}, {-4.7, 2.6}, {-6,3}}};
+    // auto point6 = RobotsPosition{3, {{-5.5,0.5}, {-4.7, 4}, {-5.5,3}}}; 
 
     // auto point = RobotsPosition{3, {{-1.76219,-0.647357}, {2,-0.5}, {-1.59339,0.886397}}}; //generator(1);
 
     // point = stepRp(point, origin, 1);
-    std::cout << "Test 0 - Should fail, obstacle collision in path of robot 1\n";
-    test_edge(origin0, point0, collision_checker, drawable::Color::Green, renderer);
-    std::cout << "Test 1 - Should fail, all robots outside connection area\n";
-    test_edge(origin1, point1, collision_checker, drawable::Color::Blue, renderer);
-    std::cout << "Test 2 - Should pass, all robots inside connection area\n";
-    test_edge(origin2, point2, collision_checker, drawable::Color::Black, renderer);
-    std::cout << "Test 3 - Should fail, robot 2 can't see anybody in its final configuration and is outside connection\n";
-    test_edge(origin3, point3, collision_checker, drawable::Color::Orange, renderer);
-    std::cout << "Test 4 - Should pass\n";
-    test_edge(origin4, point4, collision_checker, drawable::Color::Brown, renderer);
-    std::cout << "Test 5 - Should fail, robot 2 can not perform its path without losing connection\n";
-    test_edge(origin5, point5, collision_checker, drawable::Color::Cyan, renderer);
-    std::cout << "Test 6 - Should fail, robots 1 and 2 with end points outside connection area and no visibility\n";
-    test_edge(origin6, point6, collision_checker, drawable::Color::DarkBlue, renderer);
+    // std::cout << "Test 0 - Should fail, obstacle collision in path of robot 1\n";
+    // test_edge(origin0, point0, collision_checker, drawable::Color::Green, renderer);
+    // std::cout << "Test 1 - Should fail, all robots outside connection area\n";
+    // test_edge(origin1, point1, collision_checker, drawable::Color::Blue, renderer);
+    // std::cout << "Test 2 - Should pass, all robots inside connection area\n";
+    // test_edge(origin2, point2, collision_checker, drawable::Color::Black, renderer);
+    // std::cout << "Test 3 - Should fail, robot 2 can't see anybody in its final configuration and is outside connection\n";
+    // test_edge(origin3, point3, collision_checker, drawable::Color::Orange, renderer);
+    // std::cout << "Test 4 - Should pass\n";
+    // test_edge(origin4, point4, collision_checker, drawable::Color::Brown, renderer);
+    // std::cout << "Test 5 - Should fail, robot 2 can not perform its path without losing connection\n";
+    // test_edge(origin5, point5, collision_checker, drawable::Color::Cyan, renderer);
+    // std::cout << "Test 6 - Should fail, robots 1 and 2 with end points outside connection area and no visibility\n";
+    // test_edge(origin6, point6, collision_checker, drawable::Color::DarkBlue, renderer);
+
+    // for(int i=0; i < 10; i++){
+    //     std::cout << "---------------------" << i << "-------------------------\n";
+    //     // auto origin = generator(2*i);
+    //     auto destiny = generator(2*i+1);
+    //     destiny = stepRp(destiny, origin, 1);
+    //     test_edge(origin, destiny, collision_checker, static_cast<drawable::Color>(i), renderer);
+    // }
 
     // std::cout << point << std::endl;
     // drawConfiguration(origin, drawable::Color::Blue, renderer);
