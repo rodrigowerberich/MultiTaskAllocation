@@ -37,7 +37,8 @@ std::vector<ConfigurationPoint> findBi(RRTClass& rrt1, RRTClass& rrt2, const Con
             Tb->setGoal(Ta->getVertices()[new_point_Ta_i]);
             auto new_point_Tb_i = Tb->grow();
             if( new_point_Tb_i != -1 ){
-                if(  distance_function(Ta->getVertices()[new_point_Ta_i], Tb->getVertices()[new_point_Tb_i]) < threshhold ){
+                auto distance = distance_function(Ta->getVertices()[new_point_Ta_i], Tb->getVertices()[new_point_Tb_i]);
+                if(  distance < threshhold ){
                     path1 = Ta->getPathToRoot(new_point_Ta_i);
                     path2 = Tb->getPathToRoot(new_point_Tb_i);
                     met = true;

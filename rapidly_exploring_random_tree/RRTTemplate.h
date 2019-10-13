@@ -24,7 +24,6 @@ private:
         return ((((double)rand())/RAND_MAX) < m_goal_search_percentage);
 
     }
-
     void addOrigin(const ConfigurationPoint& origin){
         m_vertices.push_back(origin);
     }

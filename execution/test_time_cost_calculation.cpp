@@ -383,4 +383,10 @@ void test_time_cost_calculation(std::tuple <std::string, std::string> values){
     // std::cout << (collision_checker(point, origin)?"Invalid":"Valid") << std::endl;
     renderer.drawPoints({complete_task_points, drawable::Color::DarkBlue});
 
+    // for(int i=0; i < found.size(); i++){
+    //     std::cout << found[i] << "Press enter to advance... ";
+    //     drawConfiguration(found[i], drawable::Color::DeepPink, renderer);
+    //     std::cin.get();
+    // }
+
 }
